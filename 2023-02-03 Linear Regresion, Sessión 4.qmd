@@ -160,7 +160,7 @@ It seems normally distributed
 
 ::: callout-note
 | Factor                               | Number (%) | Coefficient | p-value                   |
-|-------------------------|----------------|----------------|----------------|
+|-----------------------|-----------------|-----------------|-----------------|
 | Animals in the house                 | 20 (4.0)   | 0.81        | 0.001                     |
 | Traditional stove                    | 19 (3.8)   | 0.24        | [0.35]{style="color:red"} |
 | Ventilation                          | 193 (38.6) | -0.43       | \<0.001                   |

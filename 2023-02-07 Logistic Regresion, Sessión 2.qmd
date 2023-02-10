@@ -213,7 +213,7 @@ So the equation for model GLM4 (the one with interaction) is:
 When we are talking about the OR (odds ratio) we only work with the coefficients (no te intercept)
 
 | Category                  | OR                                                                   |
-|-----------------|-------------------------------------------------------|
+|---------------------------|----------------------------------------------------------------------|
 | Young                     |                                                                      |
 | OR for not educated young | =3.0610396\^Educat \* 1.2098765\^young \* 0.1696256\^(Educat\*young) |
 |                           | =3.0610396\^0 \* 1.2098765\^1 \* 0.1696256\^(0\*1)                   |
