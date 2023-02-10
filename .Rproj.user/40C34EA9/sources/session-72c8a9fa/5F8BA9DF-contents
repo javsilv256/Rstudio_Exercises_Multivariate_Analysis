@@ -1,0 +1,630 @@
+---
+title: "2023-02-09 Assigment"
+format: 
+  html:
+    self-contained: true
+---
+
+-   Instituut Voor Tropische Geneeskunde - Antwerp, Belgium
+
+## Step by Step - Selection of variables for modeling
+
+##### Import data
+
+Importing a CSV database under the name of "VL_Bihar":
+
+```{r}
+library(readxl)
+VL_Bihar <- read_excel("C:/Users/pined/OneDrive - Universidad Nacional Mayor de San Marcos/Javier 2022/Belgica/AC2/Logistic Regresion Exercise Database/Datasets/VL_Bihar.xlsx")
+```
+
+### Starting the Exercise:
+
+##### 1. Description of the study population
+
+1.1 Sex
+
+```{r}
+#| echo: fenced
+table(VL_Bihar$sex, useNA = "always")     #frecuency
+prop.table(table(VL_Bihar$sex))           #proportion
+```
+
+1.2 Age
+
+```{r}
+#| echo: fenced
+summary(VL_Bihar$age)
+```
+
+1.2.1 Categories of age
+
+```{r}
+#| echo: fenced
+#Group Age
+VL_Bihar$groupage <- NA
+VL_Bihar$groupage[VL_Bihar$age<15] <- "0"
+VL_Bihar$groupage[VL_Bihar$age>14 & VL_Bihar$age<35] <- "1"
+VL_Bihar$groupage[VL_Bihar$age>34] <- "2"
+
+table(VL_Bihar$groupage, useNA = "always")     #frecuency
+prop.table(table(VL_Bihar$groupage, useNA = "always"))           #proportion
+
+```
+
+1.3 Case
+
+```{r}
+#| echo: fenced
+table(VL_Bihar$case, useNA = "always")     #frecuency
+prop.table(table(VL_Bihar$case))           #proportion
+```
+
+1.4. Died
+
+```{r}
+#| echo: fenced
+table(VL_Bihar$died, useNA = "always")     #frecuency
+prop.table(table(VL_Bihar$died))           #proportion
+```
+
+1.5. neem_tree
+
+```{r}
+#| echo: fenced
+table(VL_Bihar$neem_tree, useNA = "always")     #frecuency
+prop.table(table(VL_Bihar$neem_tree))           #proportion
+```
+
+1.6. bamboo_tree
+
+```{r}
+#| echo: fenced
+table(VL_Bihar$bamboo_tree, useNA = "always")     #frecuency
+prop.table(table(VL_Bihar$bamboo_tree))           #proportion
+```
+
+1.7. banana_tree
+
+```{r}
+#| echo: fenced
+table(VL_Bihar$banana_tree, useNA = "always")     #frecuency
+prop.table(table(VL_Bihar$banana_tree))           #proportion
+```
+
+1.8. rice_field
+
+```{r}
+#| echo: fenced
+table(VL_Bihar$rice_field, useNA = "always")     #frecuency
+prop.table(table(VL_Bihar$rice_field))           #proportion
+```
+
+1.9. permanent_water_body
+
+```{r}
+#| echo: fenced
+table(VL_Bihar$permanent_water_body, useNA = "always")     #frecuency
+prop.table(table(VL_Bihar$permanent_water_body))           #proportion
+```
+
+1.10 granaries_in_hh
+
+```{r}
+#| echo: fenced
+table(VL_Bihar$granaries_in_hh, useNA = "always")     #frecuency
+prop.table(table(VL_Bihar$granaries_in_hh))           #proportion
+```
+
+1.11 owngoat
+
+```{r}
+#| echo: fenced
+table(VL_Bihar$owngoat, useNA = "always")     #frecuency
+prop.table(table(VL_Bihar$owngoat))           #proportion
+```
+
+1.12 ownpoul
+
+```{r}
+#| echo: fenced
+table(VL_Bihar$ownpoul, useNA = "always")     #frecuency
+prop.table(table(VL_Bihar$ownpoul))           #proportion
+```
+
+1.13 ownbov
+
+```{r}
+#| echo: fenced
+table(VL_Bihar$ownbov, useNA = "always")     #frecuency
+prop.table(table(VL_Bihar$ownbov))           #proportion
+```
+
+1.14 bednet
+
+```{r}
+#| echo: fenced
+table(VL_Bihar$bednet, useNA = "always")     #frecuency
+prop.table(table(VL_Bihar$bednet))           #proportion
+```
+
+1.15 asset_index
+
+```{r}
+#| echo: fenced
+table(VL_Bihar$asset_index, useNA = "always")     #frecuency
+prop.table(table(VL_Bihar$asset_index))           #proportion
+```
+
+1.16 riskwall
+
+```{r}
+#| echo: fenced
+table(VL_Bihar$riskwall, useNA = "always")     #frecuency
+prop.table(table(VL_Bihar$riskwall))           #proportion
+```
+
+1.17 earthfloor
+
+```{r}
+#| echo: fenced
+table(VL_Bihar$earthfloor, useNA = "always")     #frecuency
+prop.table(table(VL_Bihar$earthfloor))           #proportion
+```
+
+1.18 sc_caste
+
+```{r}
+#| echo: fenced
+table(VL_Bihar$sc_caste, useNA = "always")     #frecuency
+prop.table(table(VL_Bihar$sc_caste))           #proportion
+```
+
+##### 2. Bivariate analysis
+
+2.1 Case and sex
+
+```{r}
+#| echo: fenced
+    GLM1 <- glm(formula = case ~ factor(sex), family = binomial, data = VL_Bihar)
+    summary(GLM1)
+    exp(coef(GLM1))
+    exp(confint(GLM1))
+```
+
+2.2 Case and age
+
+```{r}
+#| echo: fenced
+    GLM2 <- glm(formula = case ~ age, family = binomial, data = VL_Bihar)
+    summary(GLM2)
+    exp(coef(GLM2))
+    exp(confint(GLM2))
+```
+
+2.2.1 Case and age group
+
+```{r}
+#| echo: fenced
+    GLM2_1 <- glm(formula = case ~ groupage, family = binomial, data = VL_Bihar)
+    summary(GLM2_1)
+    exp(coef(GLM2_1))
+    exp(confint(GLM2_1))
+```
+
+2.3 Case and died
+
+```{r}
+#| echo: fenced
+    GLM3 <- glm(formula = case ~ factor(died), family = binomial, data = VL_Bihar)
+    summary(GLM3)
+    exp(coef(GLM3))
+    exp(confint(GLM3))
+```
+
+2.4 Case and neem_tree
+
+```{r}
+#| echo: fenced
+    GLM4 <- glm(formula = case ~ factor(neem_tree), family = binomial, data = VL_Bihar)
+    summary(GLM4)
+    exp(coef(GLM4))
+    exp(confint(GLM4))
+```
+
+2.5 Case and bamboo_tree
+
+```{r}
+#| echo: fenced
+    GLM5 <- glm(formula = case ~ factor(bamboo_tree), family = binomial, data = VL_Bihar)
+    summary(GLM5)
+    exp(coef(GLM5))
+    exp(confint(GLM5))
+```
+
+2.6 Case and banana_tree
+
+```{r}
+#| echo: fenced
+    GLM6 <- glm(formula = case ~ factor(banana_tree), family = binomial, data = VL_Bihar)
+    summary(GLM6)
+    exp(coef(GLM6))
+    exp(confint(GLM6))
+```
+
+2.7 Case and rice_field
+
+```{r}
+#| echo: fenced
+    GLM7 <- glm(formula = case ~ factor(rice_field), family = binomial, data = VL_Bihar)
+    summary(GLM7)
+    exp(coef(GLM7))
+    exp(confint(GLM7))
+```
+
+2.8 Case and permanent_water_body
+
+```{r}
+#| echo: fenced
+    GLM8 <- glm(formula = case ~ factor(permanent_water_body), family = binomial, data = VL_Bihar)
+    summary(GLM8)
+    exp(coef(GLM8))
+    exp(confint(GLM8))
+```
+
+2.9 Case and granaries_in_hh
+
+```{r}
+#| echo: fenced
+    GLM9 <- glm(formula = case ~ factor(granaries_in_hh), family = binomial, data = VL_Bihar)
+    summary(GLM9)
+    exp(coef(GLM9))
+    exp(confint(GLM9))
+```
+
+2.10 Case and owngoat
+
+```{r}
+#| echo: fenced
+    GLM10 <- glm(formula = case ~ factor(owngoat), family = binomial, data = VL_Bihar)
+    summary(GLM10)
+    exp(coef(GLM10))
+    exp(confint(GLM10))
+```
+
+2.11 Case and ownpoul
+
+```{r}
+#| echo: fenced
+    GLM11 <- glm(formula = case ~ factor(ownpoul), family = binomial, data = VL_Bihar)
+    summary(GLM11)
+    exp(coef(GLM11))
+    exp(confint(GLM11))
+```
+
+2.12 Case and ownbov
+
+```{r}
+#| echo: fenced
+    GLM12 <- glm(formula = case ~ factor(ownbov), family = binomial, data = VL_Bihar)
+    summary(GLM12)
+    exp(coef(GLM12))
+    exp(confint(GLM12))
+```
+
+2.13 Case and bednet
+
+```{r}
+#| echo: fenced
+    GLM13 <- glm(formula = case ~ factor(bednet), family = binomial, data = VL_Bihar)
+    summary(GLM13)
+    exp(coef(GLM13))
+    exp(confint(GLM13))
+```
+
+2.14 Case and asset_index
+
+```{r}
+#| echo: fenced
+    GLM14 <- glm(formula = case ~ factor(asset_index), family = binomial, data = VL_Bihar)
+    summary(GLM14)
+    exp(coef(GLM14))
+    exp(confint(GLM14))
+```
+
+2.15 Case and riskwall
+
+```{r}
+#| echo: fenced
+    GLM15 <- glm(formula = case ~ factor(riskwall), family = binomial, data = VL_Bihar)
+    summary(GLM15)
+    exp(coef(GLM15))
+    exp(confint(GLM15))
+```
+
+2.16 Case and earthfloor
+
+```{r}
+#| echo: fenced
+    GLM16 <- glm(formula = case ~ factor(earthfloor), family = binomial, data = VL_Bihar)
+    summary(GLM16)
+    exp(coef(GLM16))
+    exp(confint(GLM16))
+```
+
+2.17 Case and sc_caste
+
+```{r}
+#| echo: fenced
+    GLM17 <- glm(formula = case ~ factor(sc_caste), family = binomial, data = VL_Bihar)
+    summary(GLM17)
+    exp(coef(GLM17))
+    exp(confint(GLM17))
+```
+
+##### 3. Multivariate analysis. Association between incidence of visceral leshmanis and regular use of bednet and which factors are potential confounders
+
+We will do the "Change in Estimate Model"
+
+Step 1. We select the factor that can be the main exposure and the other exposures that have logic
+
+::: callout-note
+Main exposure: regular use of bed net
+
+Exclude: Died
+:::
+
+Step 2. First do the crude odd ratio (bivariate)
+
+```{r}
+#| echo: fenced
+ML1 <- glm(factor(case) ~ factor(bednet), family=binomial, data=VL_Bihar)
+summary(ML1)
+exp(coef(ML1))
+exp(confint(ML1))
+```
+
+Step 3. Then adding each other variable and writing it down. And doing the table of how much change the OR
+
+Case - bednet + sex
+
+```{r}
+#| echo: fenced
+ML2 <- glm(factor(case) ~ factor(bednet) + factor(sex), family=binomial, data=VL_Bihar)
+exp(coef(ML2))
+exp(confint(ML2))
+```
+
+Case - bednet + age
+
+```{r}
+#| echo: fenced
+ML3 <- glm(factor(case) ~ factor(bednet) + age, family=binomial, data=VL_Bihar)
+exp(coef(ML3))
+exp(confint(ML3))
+```
+
+Case - bednet + groupage
+
+```{r}
+#| echo: fenced
+ML3_2 <- glm(factor(case) ~ factor(bednet) + groupage, family=binomial, data=VL_Bihar)
+exp(coef(ML3_2))
+exp(confint(ML3_2))
+```
+
+Case - bednet + neem_tree
+
+```{r}
+#| echo: fenced
+ML4 <- glm(factor(case) ~ factor(bednet) + factor(neem_tree), family=binomial, data=VL_Bihar)
+exp(coef(ML4))
+exp(confint(ML4))
+```
+
+Case - bednet + bamboo_tree
+
+```{r}
+#| echo: fenced
+ML5 <- glm(factor(case) ~ factor(bednet) + factor(bamboo_tree), family=binomial, data=VL_Bihar)
+exp(coef(ML5))
+exp(confint(ML5))
+```
+
+Case - bednet + banana_tree
+
+```{r}
+#| echo: fenced
+ML6 <- glm(factor(case) ~ factor(bednet) + factor(banana_tree), family=binomial, data=VL_Bihar)
+exp(coef(ML6))
+exp(confint(ML6))
+```
+
+Case - bednet + rice_field
+
+```{r}
+#| echo: fenced
+ML7 <- glm(factor(case) ~ factor(bednet) + factor(rice_field), family=binomial, data=VL_Bihar)
+exp(coef(ML7))
+exp(confint(ML7))
+```
+
+Case - bednet + permanent_water_body
+
+```{r}
+#| echo: fenced
+ML8 <- glm(factor(case) ~ factor(bednet) + factor(permanent_water_body), family=binomial, data=VL_Bihar)
+exp(coef(ML8))
+exp(confint(ML8))
+```
+
+Case - bednet + granaries_in_hh
+
+```{r}
+#| echo: fenced
+ML9 <- glm(factor(case) ~ factor(bednet) + factor(granaries_in_hh), family=binomial, data=VL_Bihar)
+exp(coef(ML9))
+exp(confint(ML9))
+```
+
+Case - bednet + owngoat
+
+```{r}
+#| echo: fenced
+ML10 <- glm(factor(case) ~ factor(bednet) + factor(owngoat), family=binomial, data=VL_Bihar)
+exp(coef(ML10))
+exp(confint(ML10))
+```
+
+Case - bednet + ownpoul
+
+```{r}
+#| echo: fenced
+ML11 <- glm(factor(case) ~ factor(bednet) + factor(ownpoul), family=binomial, data=VL_Bihar)
+exp(coef(ML11))
+exp(confint(ML11))
+```
+
+Case - bednet + ownbov
+
+```{r}
+#| echo: fenced
+ML12 <- glm(factor(case) ~ factor(bednet) + factor(ownbov), family=binomial, data=VL_Bihar)
+exp(coef(ML12))
+exp(confint(ML12))
+```
+
+Case - bednet + asset_index
+
+```{r}
+#| echo: fenced
+ML13 <- glm(factor(case) ~ factor(bednet) + factor(asset_index), family=binomial, data=VL_Bihar)
+summary(ML13)
+exp(coef(ML13))
+exp(confint(ML13))
+```
+
+Case - bednet + riskwall
+
+```{r}
+#| echo: fenced
+ML14 <- glm(factor(case) ~ factor(bednet) + factor(riskwall), family=binomial, data=VL_Bihar)
+exp(coef(ML14))
+exp(confint(ML14))
+```
+
+Case - bednet + earthfloor
+
+```{r}
+#| echo: fenced
+ML15 <- glm(factor(case) ~ factor(bednet) + factor(earthfloor), family=binomial, data=VL_Bihar)
+exp(coef(ML15))
+exp(confint(ML15))
+```
+
+Case - bednet + sc_caste
+
+```{r}
+#| echo: fenced
+ML16 <- glm(factor(case) ~ factor(bednet) + factor(sc_caste), family=binomial, data=VL_Bihar)
+exp(coef(ML16))
+exp(confint(ML16))
+```
+
+Table of how much change the OR
+
+| Factor   | Co factor             | OR       | 95IC                  | Change-in-estimate |
+|---------------|---------------|---------------|---------------|---------------|
+| Bed nets |                       | 0.4725   | 0.2941532 0.7252757   | Ref                |
+| Bed nets | factor(sex)           | 0.47374  | 0.2948994 0.7272629   | -0.3%              |
+| Bed nets | age                   | 0.496305 | 0.3083839 0.7636801   | -5.0%              |
+| Bed nets | group age             | 0.49619  | 0.3082705 0.7636340   | -5.0%              |
+| Bed nets | under5                | 0.482438 | 0.3000965 0.7413054   | -2.1%              |
+| Bed nets | factor(neem_tree), f  | 0.474045 | 0.2950723 0.7277817   | -0.3%              |
+| Bed nets | factor(bamboo_tree),  | 0.483379 | 0.30071367 0.7426603  | -2.3%              |
+| Bed nets | factor(banana_tree),  | 0.473633 | 0.2948139 0.7271530   | -0.2%              |
+| Bed nets | factor(rice_field),   | 0.480023 | 0.29863762 0.7374461  | -1.6%              |
+| Bed nets | factor(permanent_wat  | 0.472345 | 0.2939865 0.7252469   | 0.0%               |
+| Bed nets | factor(granaries_in\_ | 0.472411 | 0.2940746 0.7252060   | 0.0%               |
+| Bed nets | factor(owngoat),      | 0.478583 | 0.2973262 0.7365004   | -1.3%              |
+| Bed nets | factor(ownpoul),      | 0.476914 | 0.2968099 0.7323453   | -0.9%              |
+| Bed nets | factor(ownbov),       | 0.467498 | 0.2906619 0.7186983   | 1.1%               |
+| Bed nets | factor(asset_index)   | 0.690651 | 0.4214821 1.0867165   | -46.2%             |
+| Bed nets | factor(riskwall), f   | 0.552839 | 0.34181591 0.8561327  | -17.0%             |
+| Bed nets | factor(earthfloor),   | 0.525292 | 0.32593161 0.80963385 | -11.2%             |
+| Bed nets | factor(sc_caste), f   | 0.547574 | 0.33945784 0.8451291  | -15.9%             |
+
+::: callout-note
+So far we know that assess index, riskwall, earthfloor and sccastle have more than 10% of change in the OR of bednet
+
+        Assess index : change of 46.2%
+        Riskwall : change of 17%
+        earthfloor: 11.2%
+        sccastle : 15.9 ( Castle is similar to assess index, so we won´t take in to account)
+:::
+
+So the model so far is:
+
+```{r}
+ML17 <- glm(factor(case) ~ factor(bednet) + factor(asset_index) + factor(riskwall) + factor(earthfloor) , family=binomial, data=VL_Bihar)
+```
+
+Step 4: We are going to exclude factors removing one by one (starting with the one with less change: earthfloor)
+
+We will star removing earthfloor:
+
+```{r}
+#| echo: fenced
+ML18 <- glm(factor(case) ~ factor(bednet) + factor(asset_index) + factor(riskwall) , family=binomial, data=VL_Bihar)
+summary(ML18)
+exp(coef(ML18))
+exp(confint(ML18))
+```
+
+And then comparing both models (ML17 vs ML18)
+
+```{r}
+anova(ML17, ML18, test="Chisq")
+```
+
+::: callout-note
+Because the Likelihood ratio test was not significant (p = 0.1157) there is not significant difference between LM17 an ML18, so we keep the simplest model ML18: factor(case) - factor(bednet) + factor(asset_index) + factor(riskwall)
+:::
+
+Now we will try to remove other factor (riskwall)
+
+```{r}
+  ML19 <- glm(factor(case) ~ factor(bednet) + factor(asset_index) , family=binomial, data=VL_Bihar)
+```
+
+And then comparing both (ML18 vs ML19)
+
+```{r}
+anova(ML18, ML19, test="Chisq")
+```
+
+::: callout-note
+Because the Likelihood ratio test was not significant (p = 0.1794) there is not significant difference between LM18 an ML19, so we keep the simplest model LM19: factor(case) - factor(bednet) + factor(asset_index)
+:::
+
+Now we will try to remove the other factor (assest_index)
+
+```{r}
+ML20 <- glm(factor(case) ~ factor(bednet) , family=binomial, data=VL_Bihar)
+```
+
+And then comparing both (ML19 vs ML20)
+
+```{r}
+anova(ML19, ML20, test="Chisq")
+```
+
+::: callout-note
+Because the Likelihood ratio test was significant (1.305e-06 ) there is a significant difference between LM18 an ML19, so we keep the complex model: factor(case) - factor(bednet) + factor(asset_index)
+
+So the final model should include: Bednet and asset_index
+
+Now the question is if those factors are ok like that or there is an interaction between them?
+:::
+
+Step 5: Analyzing the interaction

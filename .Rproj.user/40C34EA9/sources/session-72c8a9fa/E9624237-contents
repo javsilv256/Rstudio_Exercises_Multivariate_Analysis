@@ -1,0 +1,85 @@
+---
+title: "2023-02-10 Session 1"
+format: 
+  html:
+    self-contained: true
+---
+
+
+-   Instituut Voor Tropische Geneeskunde - Antwerp, Belgium
+-   Javier Silva-Valencia
+
+## Step by Step - Selection of variables for modeling
+
+##### Import data
+
+Importing a CSV database under the name of "poisson_smoking_mort", with "," as separator:
+
+```{r}
+poisson_smoking_mort <- read.csv("C:/Users/pined/OneDrive - Universidad Nacional Mayor de San Marcos/Javier 2022/Belgica/AC2/Logistic Regresion Exercise Database/Datasets/poisson_smoking_mort.csv", sep=",")
+```
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+### Starting the Exercise
+
+```{r}
+str(poisson_smoking_mort)
+poisson_smoking_mort$smoke <-   factor(poisson_smoking_mort$smoke)
+```
+
+```{r}
+
+table1 <- aggregate(cbind(deaths, pop) ~ smoke, data=poisson_smoking_mort, FUN=sum)
+table1
+```
+
+```{r}
+table(poisson_smoking_mort$smoke)
+```
+
+
+# Doing the poisson
+```{r}
+GLM.1 <- glm(deaths ~  offset(log(pop)) + smoke, family=poisson(log), data=poisson_smoking_mort)
+summary(GLM.1)
+exp(coef(GLM.1))
+exp(confint(GLM.1))
+```
+
+```{r}
+GLM.2 <- glm(deaths ~  offset(log(pop)) + smoke + factor(age), family=poisson(log), data=poisson_smoking_mort)
+summary(GLM.2)
+exp(coef(GLM.2))
+exp(confint(GLM.2))
+```
+
+```{r}
+anova(GLM.1, GLM.2, test="Chisq")
+```
+
+GLM.3 interaction
+
+ANOVA GLM.2 vs GLM.3 (interaction is not necessary)
+
+
+Check if the dispersion parameter is near to one (if it to far to 1, then the stardat error could be wrong). This is done before we can say that this model is significant
+
+```{r}
+dispp <- sum(residuals(GLM.2, type="pearson")^2)/GLM.2$df.residual
+dispp
+```
+My dispersion parameter is close to 1 so we can keep it with the poisson model, but yet we will gonna try the other way (negative binomial model)
+
+library(MAAS)
+GLM.NM <- glm.nb(deaths ~  offset(log(pop)) + smoke + factor(age), data=poisson_smoking_mort)
+exp(coef(GLM.NM))
+exp(confint(GLM.NM))
+
+The OR and IC are similar in bot models (poisson and negative binomial model)
+
+
+
+

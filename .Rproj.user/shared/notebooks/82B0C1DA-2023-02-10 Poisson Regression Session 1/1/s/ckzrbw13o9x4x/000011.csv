@@ -1,0 +1,3 @@
+"0",""
+"0","table1 <- aggregate(cbind(deaths, pop) ~ smoke, data=poisson_smoking_mort, FUN=sum)"
+"0","table1"

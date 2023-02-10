@@ -1,0 +1,14 @@
+{
+  "hash": "e235d649e0fa4c5d430f8e5aed46c5f8",
+  "result": {
+    "markdown": "---\ntitle: \"2023-02-09 Assigment\"\nformat: \n  html:\n    self-contained: true\n---\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(readxl)\nVL_Bihar <- read_excel(\"C:/Users/pined/OneDrive - Universidad Nacional Mayor de San Marcos/Javier 2022/Belgica/AC2/Logistic Regresion Exercise Database/Datasets/VL_Bihar.xlsx\")\n```\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
