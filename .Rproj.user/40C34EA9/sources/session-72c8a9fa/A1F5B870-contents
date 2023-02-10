@@ -1,0 +1,120 @@
+---
+title: "31th Jan. Session 1 "
+format: 
+  html:
+    self-contained: true
+---
+
+-   Instituut Voor Tropische Geneeskunde - Antwerp, Belgium
+-   Javier Silva-Valencia
+
+## Step by Step
+
+##### Import data
+
+Importing a CSV database under the name of lbwpmor, with "," as separator, and with "." as decimal:
+
+```{r}
+lbwpmor <- read.csv("C:/Users/pined/OneDrive - Universidad Nacional Mayor de San Marcos/Javier 2022/Belgica/AC2/Exercise and Datasets/Datasets/lbwpmor.csv", sep=",", dec= ".")
+```
+
+We assume that all variables ok to start (we dont need to transform or create variables)
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+### Starting the Exercise: Low birth and perinatal mortality
+
+An ecological study has looked into the relationship between the incidence of low birth weight ("low birth weight per 100 births") and perinatal mortality ("perinatal mortality per 100 births") in health districts of a certain region.
+
+##### 1. Finding Correlation (To assume linearity)
+
+```{r}
+#Code in R:
+  cor(lbwpmor$inclbw, lbwpmor$permor)
+```
+
+::: callout-note
+As a result: we have an r of 0.68. It is a moderate strong positive correlation
+:::
+
+------------------------------------------------------------------------
+
+##### 2. Doing the Scatterplot
+
+```{r}
+#Code in R:          
+  # Make a scatterplot
+  plot(lbwpmor$inclbw, lbwpmor$permor, main="Title")
+  # add a regression line
+  abline(lm(permor~inclbw, data = lbwpmor), col = "blue")
+```
+
+::: callout-note
+As a result: we can see a linear positive correlation
+:::
+
+------------------------------------------------------------------------
+
+##### 3. Doing the Linear regresion
+
+```{r}
+#Code in R:
+lmHeight = lm(permor ~ inclbw, data = lbwpmor)
+summary(lmHeight)
+```
+
+::: callout-note
+-A. As a result: we can recreate the formula with the data we obtained
+
+    * y = a+b(x)
+    * a= 0.42139
+    * b = 0.14677
+    So, the formula would be:
+    * Y= 0.42 +0.147(X)
+      
+
+-B. We also find the R2
+
+    * R2 is the "Determination coefficient". 
+    * R2 =  0.4708
+    Interpretation: 
+    "47% of the variability of the mortality could be explained by the model"
+        
+
+-C. We also find the p value = 0.000837
+
+    Interpretation:
+    *P value in this case says that there is a statisticas association between mortality
+    and low birth weight (that is the same that says that "the slope of the regresion line 
+    is significanly different from zero)
+        
+
+-D. As another result we have the "correlation coefficient"
+
+    Remember that we calculate the correlation coefficiente before in part 1 ("1. Finding
+    Correlation"). But we can also calculate here because: 
+          Correlation coefficient = Square root of R2
+    So:
+          Correlation coefficient (r) = Sqrt(0.4708)
+          Correlation coefficient (r) = 0.6861
+    Interpretation: 
+        "The value of 0.68 suggest a strong positive association"
+:::
+
+##### 4. Predict "y" where X=8
+
+Before we have already calculated the formula: "Y= 0.42 +0.147(X)" So we just need to replace the "X"
+
+```{r}
+#Calculate:
+0.42 +(0.147*8)
+```
+
+::: callout-note
+Clarification: Using the Linear regression formula above we can say that
+
+    when "low birth weight per 100 births" is 8 
+    the "perinatal mortality per 100 births" may be 1.596
+:::

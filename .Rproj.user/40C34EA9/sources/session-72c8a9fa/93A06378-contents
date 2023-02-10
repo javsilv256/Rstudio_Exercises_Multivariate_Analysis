@@ -1,0 +1,65 @@
+project:
+  type: website
+
+website:
+  title: "Lecture Notes (JSV) - Multivariate analysis"
+  description: "ddd"
+  
+  page-navigation: true
+  
+  navbar: 
+    background: primary
+    left:
+      - href: index.qmd
+        text: Homes
+      - about.qmd
+      - text: More
+        menu: 
+          - about.qmd
+  sidebar: 
+    style: floating
+    search: true
+    contents: 
+      - index.qmd
+      - text: "---"
+      - section: "Linear Regression"
+        contents: 
+          - "2023-01-31 Linear Regresion 1.qmd"
+          - "2023-02-01 Linear Regresion, Sessión 2.qmd"
+          - "2023-02-02 Linear Regresion, Sessión 3_Aft.qmd"
+          - "2023-02-03 Linear Regresion, Sessión 4.qmd"
+      
+      - text: "---"
+      - section: "Logistic Regression"
+        contents: 
+          - "2023-02-06 Logistic Regresion, Sessión 1.qmd"
+          - "2023-02-07 Logistic Regresion, Sessión 2.qmd"
+          - "2023-02-08 Logistic Regresion, Sessión 3.qmd"
+          - "Personal_Assigment_ML.qmd"
+    title: "ssddddddddddddddddddddd"
+    subtitle: "sss"
+    tools: 
+      - icon: linkedin
+        href: https://www.linkedin.com/in/javier-silva-valencia/
+        
+  page-footer: 
+    center: "Copyright 2023, Javier Silva-Valencia" 
+    right: 
+      - icon: github
+        href: https://github.com/
+      - icon: twitter 
+        href: https://twitter.com/ 
+    border: true
+    background: light 
+  
+  
+format:
+  html:
+    theme: 
+      light: flatly
+    css: styles.css
+    toc: true
+
+editor: visual
+
+

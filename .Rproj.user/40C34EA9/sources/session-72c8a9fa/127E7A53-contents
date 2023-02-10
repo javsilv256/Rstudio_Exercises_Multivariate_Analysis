@@ -1,0 +1,223 @@
+---
+title: "2023-02-01. Session 2"
+format: 
+  html:
+    self-contained: true
+---
+
+-   Instituut Voor Tropische Geneeskunde - Antwerp, Belgium
+-   Javier Silva-Valencia
+
+## Step by Step
+
+##### Import data
+
+Importing a CSV database under the name of "evans", with "," as separator and "." as decimal:
+
+```{r}
+evans <- read.csv("C:/Users/pined/OneDrive - Universidad Nacional Mayor de San Marcos/Javier 2022/Belgica/AC2/Linear Regresion Exercise Database/Datasets/evans_county.csv", sep=",", dec= ".")
+```
+
+We assume that all variables ok to start (we dont need to transform or create variables)
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+### Starting the Exercise:
+
+Is the Queteled Index(QTI) associated with systolic blood pressure(SBP)?
+
+Independent variable: QTI
+
+Dependent variable: SBP
+
+##### 0. It is a good practice to explore the data. In this case with a scatterplot
+
+```{r}
+#Code in R:          
+  # Make a scatterplot
+  plot(evans$QTI, evans$SBP, main="Scatterplot")
+  # add a regression line
+  abline(lm(SBP~QTI, data = evans), col = "blue")
+```
+
+::: callout-note
+-We can see that there could be a correlation, although it seen not very strong
+:::
+
+##### 1. What is the regressión equation?
+
+```{r}
+#Code for linear regresion:
+  lmQTI = lm(SBP ~ QTI, data = evans)
+  summary(lmQTI)
+```
+
+::: callout-note
+-As a result: we can create the equation with the data we obtained
+
+    * Formula:  y = a+b(x)
+    * a = 129.420
+    * b = 4.439
+        (b is the slope, 
+        it means that for every increase of 1 in QTI the SBP increase in 4.43)
+
+    So, the equation would be:
+    * Y= 129.420 + 4.439(X)
+:::
+
+##### 2. How much is the determination coefficient? What does it mean?
+
+::: callout-note
+-The determination coefficient is R2 = 0.009
+
+    Interpretation: 
+    " __%  of the variability of the outcome could be explained by the model "
+    "0.9% of the variability of the SBP(blood preasure) could be explained by the model"
+:::
+
+##### 3. Is the slope for QTI statiscally significant?
+
+::: callout-note
+-The slope for QTI is 4.439 -And its p value is 0.0183 (less than 0.05)
+
+    Interpretation: 
+    *P value in this case says that there is a statisticas association (that is the same that       says that "the slope of the regresion line is significanly different from zero)
+:::
+
+### Testing the assumptions (linearity, homogeneity of variance, normality...)
+
+First we need to calculate the residuals an calculate the estimated outcome(fitted) as new variables
+
+```{r}
+evans$mod_resid <- residuals(lmQTI)
+evans$mod_fitted <- fitted(lmQTI)
+```
+
+##### 4. Is the association betwenn SBP and QTI a linear association?
+
+We scatterplot the residuals against the exposure(VI)
+
+```{r}
+#Code in R:          
+  # Make a scatterplot
+  plot(evans$QTI, evans$mod_resid, main="Scatterplot")
+  # add a regression line
+  abline(lm(mod_resid~QTI, data = evans), col = "blue")
+```
+
+::: callout-note
+    We scatterplot the residuals against the exposure(VI) 
+    In this case because we see it as a cloud, then we assume linearity
+:::
+
+##### 5. Is the variance of the residuals homogeneous?
+
+We scatterplot the residuals against the estimated outcome(fitted)
+
+```{r}
+#Code in R:          
+  # Make a scatterplot
+  plot(evans$mod_fitted, evans$mod_resid, main="Scatterplot")
+  # add a regression line
+  abline(lm(mod_resid ~ mod_fitted, data = evans), col = "blue")
+```
+
+::: callout-note
+    We residuals against the estimated outcome(fitted)
+    In this case because we see it as a cloud, then we assume homogeneity
+:::
+
+##### 6. Are the residuals normally distributted?
+
+```{r}
+#Doing an histogram of the residuals
+  hist(evans$mod_resid,main="Age distribution of study participants", 
+     xlab="Age (years)", ylab="nb", col="green", border="dark green")
+```
+
+::: callout-note
+    Seems not
+:::
+
+##### 7. Are the observations independent?
+
+::: callout-note
+    We dont need any calculation for this.
+    Because we are not working with sequential measures (in time or in space):
+      The observations  are  independent
+:::
+
+##### 8. Are there any extreme values?
+
+::: callout-note
+    For this we need to made a scatter plot of the residuals against the estimated outcome (fitted) (we already did this in step 5 )
+
+    For discussion. It seems to have some extreme values.
+:::
+
+##### 9. Are there any influential observation?
+
+::: callout-note
+    For this we need to made a scatter plot of the residuals against the exposure (we already did this in step 4 )
+
+    For discussion. It seems to have some influential observations.
+:::
+
+##### 10. Does the model significantly improve when the variable AGE is added?
+
+We do this doing an multivariate linear regresion
+
+```{r}
+#Code for linear regresion:
+  lmQTI_AGE = lm(SBP ~ QTI+AGE, data = evans)
+  summary(lmQTI_AGE)
+```
+
+::: callout-note
+-A. As a result: we can create the new formula with the data we obtained
+
+    * y = a + b1(x1) + b2(x2)
+    * a= 73.4912
+    * b1 = 5.6031
+    * b2 = 0.9630
+    So, the formula would be:
+    * Y= 73.4912 + 5.6031(QTI) + 0.9630(AGE)
+
+-B. We also find the R2
+
+    * R2 is the "Determination coefficient". 
+    * R2 =  0.1136
+    Interpretation: 
+    "11% of the variability of the SBP could be explained by the model"
+
+-C. Does the model significantly improve when the variable AGE is added?
+
+    * It improves, but I dont know if it is a significantly improvement. 
+:::
+
+To know if it is a significantly improvement, we can do an anova table comparing the 2 models
+
+```{r}
+#Code for ANOVA
+    anova (lmQTI,lmQTI_AGE)
+```
+
+::: callout-note
+p = 2.2e-16 The second model has a significant difference to the first model, so including AGE has increased significantly the model.
+:::
+
+##### 11. Which proportion of the variability in SBP is explained by this model?
+
+::: callout-note
+We already did it at step 10 \* R2 is the "Determination coefficient". \* R2 = 0.1136 Interpretation: "11% of the variability of the SBP could be explained by the model"
+:::
+
+##### 12. Please write down the equation of the model
+
+::: callout-note
+We already did it at step 10 \* y = a + b1(x1) + b2(x2) \* a= 73.4912 \* b1 = 5.6031 \* b2 = 0.9630 So, the formula would be: \* Y= 73.4912 + 5.6031(QTI) + 0.9630(AGE)
+:::
+
+Finish =)

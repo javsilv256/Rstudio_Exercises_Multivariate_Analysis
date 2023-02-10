@@ -1,0 +1,200 @@
+---
+title: "2023-02-02 Linear Regresion, Sessión 3_Aft"
+format: 
+  html:
+    self-contained: true
+---
+
+-   Instituut Voor Tropische Geneeskunde - Antwerp, Belgium
+-   Javier Silva-Valencia
+
+## Step by Step
+
+##### Import data
+
+Importing a CSV database under the name of "usamod", with "," as separator and "." as decimal:
+
+```{r}
+usamod <- read.csv("C:/Users/pined/OneDrive - Universidad Nacional Mayor de San Marcos/Javier 2022/Belgica/AC2/Exercise and Datasets/Datasets/usamod.csv", sep=",", dec= ".")
+```
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+### Starting the Exercise:
+
+The data represents a sample of 28 women. Those with ID 1 to 11 come from Pizzana, while those with ID 12 to 28 come from Steakosin
+
+##### 1. Perform the regresion analysis on the association between cholesterol and age. Write down the equation of the model. What can you say this model.
+
+Independant variable: Age (numeric) Dependant variable: Cholesterol (numeric)
+
+```{r}
+#Code in R:
+lmCholes_Age = lm(cholest ~ age, data = usamod)
+summary(lmCholes_Age)
+```
+
+::: callout-note
+-A. As a result: we can recreate the formula with the data we obtained
+
+    * y = a+b(x)
+    * a= 119.5947
+    * b = 1.8612
+        "For every increase of 1 in age, the cholesterol would increase in 1.86"
+    So, the formula would be:
+    * Y= 119.5947 +1.8612(X)
+      
+
+-B. We also find the R2
+
+    * R2 is the "Determination coefficient". 
+    * R2 =  0.4164
+    Interpretation: 
+    "41% of the variability of the Cholesterol could be explained by the model"
+        
+
+-C. We also find the p value = 0.0002092
+
+    Interpretation:
+    *P value in this case says that there is a statisticas association between Cholesterol
+    and age (that is the same that says that "the slope of the regresion line 
+    is significanly different from zero)
+        
+
+-D. As another result we have the "correlation coefficient"
+
+          Correlation coefficient = Square root of R2
+    So:
+          Correlation coefficient (r) = sqrt(0.4164)
+          Correlation coefficient (r) = 0.6452906
+    Interpretation: 
+        "The value of 0.64 suggest a strong positive association"
+:::
+
+##### 2.Now generate a new variable called State (according tho the statement at the beggining). Add State to the model and write down the equation for each categorie. Does the addition of State improve the model significantly? Is this a parallell lines model or a separate lines model?
+
+2.1 Creating the variable
+
+```{r}
+#Creating the variable
+    usamod$state <-  "steakosin"                    #Creating a variable w/only "steakosin"
+    usamod$state[usamod$id<12] <- "pizzana"         #Replacing where id<12
+#When used the pizzana would be the reference (alphabetical order)
+```
+
+2.2 Puting inside the model
+
+```{r}
+#Code in R:
+lmCholes_Age_Stat = lm(cholest ~ age + state, data = usamod)
+summary(lmCholes_Age_Stat)
+```
+
+::: callout-note
+-   The equations for each categorie are:
+
+        When State is Pizzana (0): 
+            y = 87.9993 + 2.1303(Age) + 30.7509(0)
+        When State is Steakonsin (1): 
+            y = 87.9993  + 2.1303(Age) + 30.7509(1)
+            y = 118.7502 + 2.1303(Age)
+
+-   The "Determination coefficient" is:
+
+    -   R2 = 0.5138 "51% of the variability of the Cholesterol could be explained by the model" (It is better that the previous model, but this improve is significant?)
+:::
+
+2.3 Seeing if it improves significantly
+
+```{r}
+#Code for ANOVA
+    anova (lmCholes_Age,lmCholes_Age_Stat)
+```
+
+::: callout-note
+The p value is 0.03 (less than 0.05) so the difference it is significant So, this new model (lmCholes_Age_Stat) is better. This is a parallel lines model
+
+But So far has prove that that in the model should be included Age and also State. But: Should the model stay like this putting state as an another variable (parallel lines) or should be put state as an interaction variable (separate lines)?
+:::
+
+##### 3.As the next step please fit a separate lines model by using interaction. Please write down the equations for pizzana and steakconsin. Is this model significantly better than the parallel lines model?
+
+3.1 Creating the model with interaction
+
+```{r}
+#Code in R:
+lmCholes_Age_Stat_INTERAC = lm(cholest ~ age*state, data = usamod)
+summary(lmCholes_Age_Stat_INTERAC)
+```
+
+::: callout-note
+-   The new equations for each categorie are:
+
+        When State is Pizzana (0): 
+            y = -2.0506 + 3.8064(Age) + 0 + 0
+        When State is Steakonsin (1): 
+            y = -2.0506  + 3.8064(Age) + 147.6374(1) + -2.2811(Age)(1)
+            y = 145.5868 + 1.5253(Age)
+
+-   The new "Determination coefficient" is:
+
+    -   R2 = 0.6257 "62% of the variability of the Cholesterol could be explained by the model" (It is better that the previous model, but this improve is significant?)
+:::
+
+3.2 Seeing if it improves significantly
+
+```{r}
+#Code for ANOVA
+    anova (lmCholes_Age_Stat,lmCholes_Age_Stat_INTERAC)
+```
+
+::: callout-note
+The p value is 0.01314 (less than 0.05) so the difference it is significant So, this new model (lmCholes_Age_Stat_INTERAC) is better.
+
+This also means that the State acts as an interaction variable, and that the regression should be presented only between 1.cholesterol and 2.age but presented separately by each group of State
+
+(In the case of not having been significant, it would have meant that the "State" doesnt acts as an interaction variable, and that the regression should be presented between 1.cholesterol, 2.age and 3.state)
+:::
+
+##### 4. Make an scatterplot with "Age" as X-variable, "cholesterol" as Y-variable and a regressión line for each category of "state". At what age do the two regressions line cross? Can you calculate the age at which the lines cross from the equation in question 3?
+
+4.1 Creating the scatterplot and linear regression only for cholest \~ age
+
+```{r include: FALSE}
+#We will try it with ggplot
+library(tidyverse)                          #Install the package
+```
+
+```{r}
+#creating the graph for a linear regression of "lm(cholest ~ age, data = usamod)"
+ggplot(usamod, aes(x=age, y=cholest)) +     
+  geom_point(size=2) +
+  geom_smooth(method=lm, se=FALSE)
+```
+
+4.2 Creating the scatterplot and linear regression for cholest \~ age for each category of state
+
+```{r}
+#creating the graph for a linear regression of "lm(cholest ~ age*state, data = usamod)"
+ggplot(usamod, aes(x=age, y=cholest, color = state)) + 
+  geom_point(size=2) +
+  geom_smooth(method=lm, se=FALSE)
+```
+
+4.3 Calculate the age at witch the two lines cross ::: callout-note So before (in section 3.1) we have calculate the equations for the linear regression of cholesterol and age with state acting as a interaction variable:
+
+      When State is Pizzana (0): 
+          y = -2.0506 + 3.8064(Age) + 0 + 0
+      When State is Steakonsin (1): 
+          y = -2.0506  + 3.8064(Age) + 147.6374(1) + -2.2811(Age)(1)
+          y = 145.5868 + 1.5253(Age)
+          
+      So if there is a point that both equations have the same "Cholesterol" value, we can calculate the Age:
+          
+          -2.0506 + 3.8064(Age) = 145.5868 + 1.5253(Age)
+                   2.2811 (Age) = 147.6374
+                          (Age) = 64.72202
+
+:::

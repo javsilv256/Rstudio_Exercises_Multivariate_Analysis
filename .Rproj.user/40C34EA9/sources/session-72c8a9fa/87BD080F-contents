@@ -1,0 +1,413 @@
+---
+title: "2023-02-03 Linear Regresion, Sessión 4"
+format: 
+  html:
+    self-contained: true
+---
+
+-   Instituut Voor Tropische Geneeskunde - Antwerp, Belgium
+-   Javier Silva-Valencia
+
+## Step by Step - Selection of variables for modeling
+
+##### Import data
+
+Importing a CSV database under the name of "sandfly", with "," as separator:
+
+```{r}
+sandfly <- read.csv("C:/Users/pined/OneDrive - Universidad Nacional Mayor de San Marcos/Javier 2022/Belgica/AC2/Linear Regresion Exercise Database/Datasets/sandfly.csv", sep=",")
+```
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+##### Spoiler alert
+
+::: callout-note
+What we are going to do today is a multivariate linear regression and selecting the variables that will be included in this regression with the "Classical model selection"
+
+So, so far we know that the steps to the "Classical model selection" are:
+
+| ***Steps***                                                                                                                                                                                                                                                  | ***Example***                                                                                                                                                                                                                                                                                                                                         |
+|------------------------------------|------------------------------------|
+|                                                                                                                                                                                                                                                              | *Imagine that you have 6 independent variables and 1 dependent variable. And you want to create a linear regression.*                                                                                                                                                                                                                                 |
+| *1. Do a simple linear regression (bivariate) which each independent variable*                                                                                                                                                                               | So we will have 6 models                                                                                                                                                                                                                                                                                                                              |
+| *2. Note the models with a p-value less than 0.10. Those are the variables we are going to start working with. Exclude the others*                                                                                                                           | Imagine that only 4 models had a p-value less than 0.10. So we keep those independent variables                                                                                                                                                                                                                                                       |
+| *3. Now create a multivariate linear regression model with all the remaining variables*                                                                                                                                                                      | So we will create 01 model with the 4 remaining independent variables. (multivariate model 1)                                                                                                                                                                                                                                                         |
+| *4. Check in the results if any on the variables have a p-value higher than 0.05. If yes, exclude the one with the highest value and create a new model with the remaining variables. Repeat until all variables has a significant p-value (less than 0.05)* | Imagine that in the results we see that two variables had a p-value bigger than 0.05. We exclude the highest and create a (multivariate model 2). In the new results we still see that one variable had a p-value bigger than 0.05. So we exclude it and create a (multivariate model 3). In the new results all variables has a significant p value. |
+| *Now you have the variables that, no matter what happens, they have to be in your model. But, are they ok in that way? or it would be better to put them as interaction?*                                                                                    | The remaining model (multivariate model 3) only includes 2 independent variables: lm(DependVariabl\~ IndepVariab1 + IndependVariable2                                                                                                                                                                                                                 |
+| *5. Create another model(s) with the remaining variables but as an interaction*                                                                                                                                                                              | So, we create another model (multivariate model 4) but as an interaction lm(DependVariabl\~ IndepVariab1 \* IndependVariable2                                                                                                                                                                                                                         |
+| *6. Check if the model(s) with interaction is significantly better than the one without interaction. For this perform an F test (anova table)*                                                                                                               | We will compare the (multivariate model 3) vs the (multivariate model 4) in an anova table.                                                                                                                                                                                                                                                           |
+| *7. If the results show that no model is better than the other, we keep the model more simple (the one without interaction). Otherwise, we keep the model with interaction*                                                                                  | Imagine that the p-value of the ANOVA table is not significant (less than 0.05). This means that no model is better than the other. So we keep the more simple model (the one without interaction)                                                                                                                                                    |
+|                                                                                                                                                                                                                                                              | So in this case the final model would be the (multivariate model 3)                                                                                                                                                                                                                                                                                   |
+:::
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+### Starting the Exercise (Ex05-2023):
+
+<sub> In Bihar, India, visceral Leishmaniasis or Kala Azar is transmitted by the phlebotomine sand fly p.argentipes. The disease is known to disproportionally affect the poorest segments of society, this could be due to increased exposure to sand flies as a result of poor housing and environmental conditions. To assess the independent contributions of different factors, a study team conducted an entomological survey and collected information on housing and environmental conditions as well as on assets owned. Five hundred houses from a rural block were randomly sampled and light traps were installed simultaneously for a total of 6 nights in each house. Per house the total number of p. argentipes sand flies captured was determined. The data can be found in sandfly.csv. </sub>
+
+###### 1. The outcome variable is tot_parg (total numbers of p.argentipes sandflyes captured per house) Is tot_parg normally distributed?
+
+```{r, out.width="70%"}
+hist(sandfly$tot_parg,main="Total number of p.argentipes sandflies captured in a house distribution", 
+     xlab="Total number of p.argentipes sandflies captured", ylab="nb", col="green", border="dark green")
+```
+
+::: callout-note
+It is not normally distributed
+:::
+
+###### 2. Generate a new variable "log_parg" which is the natural logarithm of tot_parg. Is normally distributed?
+
+```{r}
+sandfly$log_parg <- log(sandfly$tot_parg)    #Creating the natural logarith variable
+```
+
+```{r, out.width="70%"}
+hist(sandfly$log_parg,main="Log of p.argentipes sandflies captured in a house distribution", 
+     xlab="Log of p.argentipes sandflies captured", ylab="nb", col="green", border="dark green")
+```
+
+::: callout-note
+It seems normally distributed
+:::
+
+###### 3. Explored in simple linear regression whether each of the independent variables is associated with log_parg. Make a table listing each factor, the number and proportion of households in which it is present
+
+<sub> This is the Classical model selection. So, we need bivariate regressions for each independent variable with log_parg </sub>
+
+3.1 Animals
+
+```{r}
+  sandfly$animals <- factor(sandfly$animals)      #Factor because is a categorical variable
+  #table (sandfly$animals, useNA="always")         #To explore the frequency and missing values
+  lm1 = lm(log_parg ~ animals, data = sandfly)    #Simple linear regression (bivariate)
+  summary(lm1)
+```
+
+3.2 Stove
+
+```{r}
+  sandfly$stove <- factor(sandfly$stove)        #Factor because is a categorical variable
+  #table (sandfly$stove, useNA="always")         #To explore the frequency and missing values
+  lm2 = lm(log_parg ~ stove, data = sandfly)    #Simple linear regression (bivariate)
+  summary(lm2)
+```
+
+3.3 Ventilation
+
+```{r}
+  sandfly$ventilation <- factor(sandfly$ventilation)    #Factor because is a categorical variable
+  #table (sandfly$ventilation, useNA="always")           #To explore the frequency and missing values
+  lm3 = lm(log_parg ~ ventilation, data = sandfly)      #Simple linear regression (bivariate)
+  summary(lm3)
+```
+
+3.4 Light
+
+```{r}
+  sandfly$light <- factor(sandfly$light)          #Factor because is a categorical variable
+  #table (sandfly$light, useNA="always")           #To explore the frequency and missing values
+  lm4 = lm(log_parg ~ light, data = sandfly)      #Simple linear regression (bivariate)
+  summary(lm4)
+```
+
+3.5 Cowdung
+
+```{r}
+  sandfly$cowdung <- factor(sandfly$cowdung)        #Factor because is a categorical variable
+  #table (sandfly$cowdung, useNA="always")           #To explore the frequency and missing values
+  lm5 = lm(log_parg ~ cowdung, data = sandfly)      #Simple linear regression (bivariate)
+  summary(lm5)
+```
+
+3.6 Water
+
+```{r}
+  sandfly$water <- factor(sandfly$water)         #Factor because is a categorical variable
+  #table (sandfly$water, useNA="always")          #To explore the frequency and missing values
+  lm6 = lm(log_parg ~ water, data = sandfly)     #Simple linear regression (bivariate)
+  summary(lm6)
+```
+
+3.7 Asset_index
+
+```{r}
+  sandfly$asset_index <- factor(sandfly$asset_index)   #Factor because is a categorical variable}
+  #we don't need to relevel
+  #table (sandfly$asset_index, useNA="always")          #To explore the frequency and missing values
+  lm7 = lm(log_parg ~ asset_index, data = sandfly)     #Simple linear regression (bivariate)
+  summary(lm7)
+```
+
+3.8 House_type
+
+```{r}
+  #Already a character (categorical) variable no need to factor
+  #table(sandfly$house_type, useNA="always")             #To explore the frequency and missing values
+  lm8 = lm(log_parg ~ house_type, data = sandfly)       #Simple linear regression (bivariate)
+  summary(lm8)
+```
+
+3.9 Completing the requested table and checking witch models has a p value higher than 0.10
+
+<sub> We do this checking all the results above </sub>
+
+::: callout-note
+| Factor                               | Number (%) | Coefficient | p-value                    |
+|---------------------------|---------------|---------------|---------------|
+| Animals in the house                 | 20 (4.0)   | 0.81        | 0.001                      |
+| Traditional stove                    | 19 (3.8)   | 0.24        | [ 0.35]{style="color:red"} |
+| Ventilation                          | 193 (38.6) | -0.43       | \<0.001                    |
+| Adequate light                       | 171 (34.2) | -0.01       | [ 0.92]{style="color:red"} |
+| Cow dung                             | 485 (97.0) | 0.50        | 0.09                       |
+| Water body                           | 98 (19.6)  | 0.13        | [ 0.29]{style="color:red"} |
+| Asset index\*                        |            |             |                            |
+| -----1 (poorest)                     | 101 (21.0) | ref         | ref                        |
+| -----2                               | 70 (14.5)  | 0.04        | 0.82                       |
+| -----3                               | 98 (20.3)  | -0.34       | 0.03                       |
+| -----4                               | 96 (19.9)  | -0.30       | 0.05                       |
+| -----5 (wealthiest)                  | 117 (24.3) | -0.70       | \<0.001                    |
+| -----Missing                         | 18         |             |                            |
+| House type                           |            |             |                            |
+| -----Plastered brick, cemented floor | 76 (15.2)  | ref         | ref                        |
+| -----Thatched                        | 161 (32.2) | 0.83        | \<0.001                    |
+| -----Unplastered brick               | 150 (30.0) | 0.25        | 0.10                       |
+| -----Plastered brick, earth floor    | 113 (22.6) | 0.02        | 0.89                       |
+:::
+
+::: callout-note
+There are 3 models that have a p value higher than 0.10 (the ones in red) Those variables are not going to enter to the final model
+:::
+
+###### 4. Construct a multiple linear regresion with all variables that were significant. Which variables will you include?
+
+<sub> We will incude those who obtained a p value less than 0.10: animals, ventilation, cowdung, asset index and house_type. The regresion model is: </sub>
+
+```{r}
+lm9 = lm(log_parg ~ animals + ventilation + cowdung + asset_index + house_type, data = sandfly)
+summary(lm9)
+```
+
+###### 5. Which is the weaksest factor (highest p-value) and how high is its p-value?
+
+::: callout-note
+Cowndown (has the higher pvalue 0.52641)
+
+Clarification: If we see the previous results, In fact the one with the highest p-value is one category of house_type (brick_efloor: 0.89678). But because there are other categories of the same variable that are significant (has p value less than 0.05), we cannot eliminate that variable.
+:::
+
+###### 6. Remove 'cowdung', which is now the weakest factor and what is its p-value?
+
+<sub> So the next model is: </sub>
+
+```{r}
+lm10 = lm(log_parg ~ animals + ventilation + asset_index + house_type, data = sandfly)
+summary(lm10)
+```
+
+::: callout-note
+Ventilation (has now the higher pvalue 0.16636)
+
+Clarification: If we see the previous results, in fact are others with a highest p-value (ej: asset_index2 or house_typepbrick_efloor). But because there are other categories of the same variable that are significant (has p value less than 0.05, we cannot eliminate that variable.
+:::
+
+###### 7. Remove 'ventilation'. Is there still another factor of which no category is significant at the 5% level ? Which factors do you keep in your final model?
+
+<sub> So the new model is: </sub>
+
+```{r}
+lm11 = lm(log_parg ~ animals + asset_index + house_type, data = sandfly)
+summary(lm11)
+```
+
+::: callout-note
+All have at least one category with a p-value \< 0.05, So there is not another factor no significant and I dont have to exclude another variable
+
+So, This factors are the ones who are going to stay in the final model: House_type, asset_index and animals.
+:::
+
+###### 8. To test for interactions generate the following binary variables:
+
+<sub> - rich, 'yes' if asset_index = 5, 'no' if asset-index = 1-4 (beware of missing values!) </sub>
+
+<sub> - thatched, 'yes' if house_type = 'thatched, else 'no'</sub>
+
+<sub> Run the model with 'animals', 'rich' and 'thatched' as predictors, note down the equation. Are all three factors statistically significant? </sub>
+
+8.1 Creating the variable Rich
+
+```{r}
+#Variable Rich
+      #table(sandfly$asset_index, useNA = "always")
+      sandfly$rich <- ifelse(sandfly$asset_index==5,1,0)
+        table(sandfly$rich, useNA = "always")
+```
+
+8.2 Creating the variable thatched
+
+```{r}
+#Variable thatched
+      #table(sandfly$house_type, useNA = "always")
+      sandfly$thatched <- ifelse(sandfly$house_type=="thatched",1,0)
+        table(sandfly$thatched, useNA = "always")
+```
+
+8.3 With this variables, the regresion model is:
+
+```{r}
+  mod12 <- lm(log_parg ~ animals+rich+thatched, data=sandfly)
+  summary(mod12)
+```
+
+::: callout-note
+We can see that all variables are still significant The equation of this model is: log_parg = 3.09 + 0.55\* animals -- 0.33\* rich + 0.56\* thatched
+:::
+
+###### 9. Theoretically there could be interactions between rich and thatched, rich and animals and animals and thatched. Is any of these interaction terms statistically significant?
+
+<sub> Check for Possible interactions (pairs)</sub>
+
+<sub>mod13 \<- lm(log_parg \~ animals+rich\*thatched, data=sandfly)</sub>
+
+<sub>mod14 \<- lm(log_parg \~ rich+thatched\*animals, data=sandfly)</sub>
+
+<sub>mod15 \<- lm(log_parg \~ animals\*rich+thatched, data=sandfly)</sub>
+
+```{r}
+mod13 <- lm(log_parg ~ animals+rich*thatched, data=sandfly)
+summary(mod13)
+  
+mod14 <- lm(log_parg ~ rich+thatched*animals, data=sandfly)
+summary(mod14)
+  
+mod15 <- lm(log_parg ~ animals*rich+thatched, data=sandfly)
+summary(mod15)
+```
+
+::: callout-note
+None of them are statistically significant. So this models are not good
+
+      - rich*thatched       p= 0.64
+      - thatched*animals    p = 0.07
+      - animals*rich        p = 0.41
+
+Clarification: To see if some model is better than another, we should perform a F test (anova table), but it will not be done in this exercise
+:::
+
+###### 10. As our final model we keep the model with type of house, asset-index and presence of animals. Please make a table presenting this final model.
+
+<sub> They are talking about lm11 = lm(log_parg \~ animals + asset_index + house_type, data = sandfly) </sub>
+
+```{r}
+lm11 = lm(log_parg ~ animals + asset_index + house_type, data = sandfly)
+summary(lm11)
+```
+
+::: callout-note
+      Intercept: 3.129930   
+      R2 : 0.1231
+      P-value of the model: 1.493e-10 (less than 0.05)
+:::
+
+10.1 The table should be like this:
+
+::: callout-note
+| Factor                          | Coefficient | p-value |
+|---------------------------------|-------------|---------|
+| Animals in the house            | 0.51        | 0.04    |
+| Asset index                     |             |         |
+| -1 (poorest)                    | ref         | ref     |
+| -2                              | 0.11        | 0.49    |
+| -3                              | -0.22       | 0.15    |
+| -4                              | -0.14       | 0.37    |
+| -5 (wealthiest)                 | -0.38       | 0.02    |
+| House type                      |             |         |
+| -Thatched                       | 0.59        | 0.0005  |
+| -Unplastered brick              | 0.07        | 0.64    |
+| -Plastered brick earth floor    | -0.007      | 0.97    |
+| -Plastered brick cemented floor | ref         | ref     |
+:::
+
+###### 11. How much of the variability in sand fly exposure is explained by the three factors retained? What would be your conclusion about exposure to sand flies in this rural area.
+
+::: callout-note
+R squared = 0.1231, so the model explains only 12% of the total variability.
+
+    - Being rich and living in a good house (Plastered brick earth floor or cemented
+      floor) reduces outcome, but far from being factors that play an important role.
+    - Could be other factors that play a role. 
+:::
+
+###### 12. What is the predicted total number of sandflies in a thatched house with animals inside of a family belonging to the poorest quintile? And in a plastered brick house with cemented floor without animals and belonging to the wealthiest quintile?
+
+12.1 For the first condition:
+
+::: callout-note
+So the conditions are:
+
+    - Animals in the hous: Yes
+    - House type: thatched house
+    - Assest index: 1 (poorest)
+
+So the equation for lm11 should be
+
+      y = a + b1X1 + b2x2 + b3x3
+      y = a + b1(animals) + b2(assest_index) + b3 (house_type)
+      y = 3.129930 + 0.51(animals) + 0(assest_index:poorest) + 0.59(house_type:thatched)
+      y = 3.13     + 0.51(1)       + 0                       + 0.59(1)
+    log_parg = 4.23
+      #The "log of parg" is 4.23, but I need the value of parg
+    exp(log_parg) = exp(4.23)
+    parg = 69
+      #parg is 69 with this conditions
+:::
+
+12.2 For the second condition:
+
+::: callout-note
+So the conditions are:
+
+    - Animals in the house: No
+    - House type: Plastered brick cemented floor
+    - Assest index: 5 (wealthiest)
+
+So the equation for lm11 should be
+
+      y = a + b1X1 + b2x2 + b3x3
+      y = a + b1(animals) + b2(assest_index) + b3 (house_type)
+      y = 3.129930 + 0.51(animals) -0.38(wealthiest) + 0(Plastered brick cemented floor)
+      y = 3.13     + 0.51(0)       -0.38(1)          + 0
+    log_parg = 2.75
+      #The "log of parg" is 2.75 , but I need the value of parg
+    exp(log_parg) = exp(2.75)
+    parg = 16
+      #parg is 16 with this conditions
+:::
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+##### Extra
+
+::: callout-note
+If we want to really check witch model is best than another (like in the step 9), we need to do a f test - anova function and see the p value:
+
+    anova(lm11, mod13)
+
+But an error may show. When one of the variables that are in one model have missing values, R eliminate those rows when doing the model. So then if we want to compare, the models might not have the same number of rows and the test will fail.
+
+For this is better to work with a subset of the data with no missing data in all the variables:
+
+So if I know that asset_index has missing value, then:
+
+    sandfly_complete <- subset(sandfly, !is.na(sandfly$asset_index))
+    or
+    sandfly_complete <- subset(sandfly, complete.cases(sandfly))
+:::
