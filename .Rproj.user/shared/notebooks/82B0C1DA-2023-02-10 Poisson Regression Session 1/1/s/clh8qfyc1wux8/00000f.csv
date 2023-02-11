@@ -1,0 +1,2 @@
+"0","table1 <- aggregate(cbind(inc_case, pop) ~ PEP_19, data=leprosy_comoros, FUN=sum)"
+"0","table1"

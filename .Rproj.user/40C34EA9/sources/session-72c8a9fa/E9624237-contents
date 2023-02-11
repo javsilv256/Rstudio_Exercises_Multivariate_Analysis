@@ -13,10 +13,10 @@ format:
 
 ##### Import data
 
-Importing a CSV database under the name of "poisson_smoking_mort", with "," as separator:
+Importing a CSV database under the name of "leprosy_comoros", with "," as separator:
 
 ```{r}
-poisson_smoking_mort <- read.csv("C:/Users/pined/OneDrive - Universidad Nacional Mayor de San Marcos/Javier 2022/Belgica/AC2/Logistic Regresion Exercise Database/Datasets/poisson_smoking_mort.csv", sep=",")
+leprosy_comoros <- read.csv("C:/Users/pined/OneDrive - Universidad Nacional Mayor de San Marcos/Javier 2022/Belgica/AC2/Poisson Regression Exercise Database/Datasets/leprosy_comoros.csv", sep=",")
 ```
 
 ------------------------------------------------------------------------
@@ -25,61 +25,240 @@ poisson_smoking_mort <- read.csv("C:/Users/pined/OneDrive - Universidad Nacional
 
 ### Starting the Exercise
 
+###### 1. Use the ‘aggregate’ function in R to determine the total population and how many cases arose over the follow-up period of 1 year? (First create a constant with a value of 1) 
+
+What was the incidence rate? 
+
+::: callout-note
+    
+    The exercise is asking to calculate the total number of cases and population    
+    during the year of the study, using the command aggregate.
+
+    So the original data is:
 ```{r}
-str(poisson_smoking_mort)
-poisson_smoking_mort$smoke <-   factor(poisson_smoking_mort$smoke)
+leprosy_comoros
 ```
-
+    
+    The aggregate command could respond to the following request: 
+    "Please agregate( or sum) "inc_case" and "population" by each category of PEP_19
 ```{r}
-
-table1 <- aggregate(cbind(deaths, pop) ~ smoke, data=poisson_smoking_mort, FUN=sum)
+#| echo: fenced
+table1 <- aggregate(cbind(inc_case, pop) ~ PEP_19, data=leprosy_comoros, FUN=sum)
 table1
 ```
+    
+    But because we want all the cases and all the population during the study
+    (not by each category of PEP),
+    we have to create a new variable of just one categorie, so that when agregate
+    it calculates everything.
+    
+```{r}
+#| echo: fenced
+leprosy_comoros$const <- 1
+table1 <- aggregate(cbind(inc_case, pop) ~ const, data=leprosy_comoros, FUN=sum)
+table1
+```
+    So, the incidence rate during the period of the study (1 year) is:
+    = 219/84715
+    = 0.002585138
+    = 2.59 per 1000 population
+
+
+We can also calculate the incidence ratio using the Poisson regression
+ 
+    Why Poisson regression?, because the Dependent Variable is a rate.
+    
+    We will just ask for the incidence (using inc_case / population)
+    with no other variable
 
 ```{r}
-table(poisson_smoking_mort$smoke)
+#| echo: fenced
+# Code for poisson regression (univariate analysis)
+GLM0 <- glm(inc_case ~  offset(log(pop)) , family=poisson(log), data=leprosy_comoros)
+summary(GLM0)
+exp(coef(GLM0))
+exp(confint(GLM0))
 ```
 
+::: callout-note
+We can see in the results that the incidence rate during the period of the study (1 year) is:
 
-# Doing the poisson
+    = exp(-5.95798)*1000
+    = 0.002585138 *1000
+    = 2.59 per 1000 population
+
+So its the same result. We can calculate the incidence rate both ways
+::: 
+
+
+
+
+###### 2. What can you say about the effect of PEP, did it protect?
+
+So far now the Dependent Variable is: Incidence rate of cases
+
+The Independent variable is: Received PEP (PEP_19)
+
+The Covariant is: Distance to the nearest other person (disc_cat)
+
+
+2.1 First we explore bivariate relation (incidence cases - PEP_19)
+
+::: callout-note
+ To calculate the RR (between incidence and PEP) we cannot do it in a table2x2 because the variables of interest are not categorical and are not dichotomies, so we use the Poisson regression
+ 
+    Why Poisson regression?, because the Dependent Variable is a rate
+::: 
+
+Doing the poisson regression (bivariate analysis: Incidenc rate and PEP_19)
 ```{r}
-GLM.1 <- glm(deaths ~  offset(log(pop)) + smoke, family=poisson(log), data=poisson_smoking_mort)
-summary(GLM.1)
-exp(coef(GLM.1))
-exp(confint(GLM.1))
+#| echo: fenced
+# Code for poisson regression (bivariate analysis)
+GLM1 <- glm(inc_case ~  offset(log(pop)) + PEP_19 , family=poisson(log), data=leprosy_comoros)
+summary(GLM1)
+exp(coef(GLM1))
+exp(confint(GLM1))
 ```
 
+::: callout-note
+So, is PEP associated with incidence? No,  the p value is 0.793 
+
+We can also see the RR
+RR of PEP = 1.047358997 IC(0.73 - 1.46)
+  So, so far it seems that PEP is a risk factor, not significant, is that true?, 
+  We should see counfonders
+::: 
+
+###### 3. The data presented here mixes up 4 different study arms, in villages randomized to study arm 1, no PEP was provided, in study arm 2 PEP was provided to household contacts of index cases, in study arm 3 PEP was provided to entire villages and in study arm 4 PEP was provided to household contacts as well as others living in the same village and testing positive to a serological screening test but asymptomatic. As a result there may be an association between PEP and distance to nearest index case. If distance would also be associated with risk of becoming an incident case, distance could be a confounder. First check if distance is indeed associated with risk of becoming an incident case. Make a table with numbers of population, cases and risk ratios + confidence intervals for the 6 distance categories
+
+3.1 We check if distance is indeed associated with risk of becoming an incident case
+
+First we count how many cases are by each distance category
 ```{r}
-GLM.2 <- glm(deaths ~  offset(log(pop)) + smoke + factor(age), family=poisson(log), data=poisson_smoking_mort)
-summary(GLM.2)
-exp(coef(GLM.2))
-exp(confint(GLM.2))
+#| echo: fenced
+# We can do it with the command table, but also with aggregate
+table2 <- aggregate(cbind(inc_case, pop) ~ dist_cat, data=leprosy_comoros, FUN=sum)
+table2
+
 ```
 
+Now we do the poisson regression (bivariate analysis: Incidence rate, dist)
 ```{r}
-anova(GLM.1, GLM.2, test="Chisq")
+#| echo: fenced
+# Code for poisson regression (bivariate analysis)
+GLM2 <- glm(inc_case ~  offset(log(pop)) + factor(dist_cat) , family=poisson(log), data=leprosy_comoros)
+summary(GLM2)
+exp(coef(GLM2))
+exp(confint(GLM2))
+```
+::: callout-note
+
+| Distance      	| Population 	| Cases 	| RR  	| 95% IC   	|
+|---------------	|------------	|-------	|-----	|----------	|
+| Same HH       	| 1976       	| 17    	| 7.5 	| 4.2-12.6 	|
+| Neighbor <25m 	| 8704       	| 46    	| 4.6 	| 3.1-6.8  	|
+| 25-50m        	| 12528      	| 43    	| 3.0 	| 2.0-4.5  	|
+| 50-75m        	| 9897       	| 43    	| 3.8 	| 2.5-5.6  	|
+| 75-100m       	| 7440       	| 19    	| 2.2 	| 1.3-3.7  	|
+| 100+m         	| 44170      	| 51    	| Ref 	| Ref      	|
+
+So the distance is indeed associated with the incidence of leprosy
+with more near are the cases more is a risk factor
+
+There is a clear a link between leprasy and distance
+The probability of receive a PEP is associated at the distance
+
+Also, we have to consider than distance could be a confounder because:
+    1. Is to the VD, 2. Is related to the VI, and 3. Is not in the causal pathway
+                
+                (Leprasy Infection) --------- (PEP-19)
+                                  \           /
+                                   Confounders
+                                    (Distance)
+
+::: 
+
+
+###### 4. Now that you have shown that distance is clearly associated with risk of disease, fit a poisson model that includes distance and PEP. What happens to the effect of PEP? 
+
+For this we do poisson regression (multivariate analysis: Incidence, PEP, dist)
+```{r}
+#| echo: fenced
+# Code for poisson regression (multivariate analysis)
+GLM3 <- glm(inc_case ~  offset(log(pop)) + PEP_19 + factor(dist_cat) , family=poisson(log), data=leprosy_comoros)
+summary(GLM3)
+exp(coef(GLM3))
+exp(confint(GLM3))
+```
+::: callout-note
+
+So, what happens to the efect of PEEP?
+
+    Is PEP now significant?
+    Yes after adjusting with distance, the p value for PEP is 0.00412, 
+    so now the association is significant
+
+Also the RR of PEP now is 0.587440946  IC (0.4032137828  0.835625711)
+so is significative protective.
+
+::: 
+
+###### 5. Assume we are fitting a significance based classic model. Is the model with both PEP and distance better than the model with only distance? 
+
+I already know that the association is significant, but for being sure they are asking to compare both models (with and without distance)(GLM1 vs GLM3) to see in there is a significant improvement
+
+```{r}
+anova(GLM3, GLM1, test="Chisq")
 ```
 
-GLM.3 interaction
+::: callout-note
 
-ANOVA GLM.2 vs GLM.3 (interaction is not necessary)
+The p value is 2.2e-16 , so it is a significant difference between both models
+So we keep the GLM3 model
 
+::: 
 
-Check if the dispersion parameter is near to one (if it to far to 1, then the stardat error could be wrong). This is done before we can say that this model is significant
+###### 6. Check the dispersion parameter, is it far removed from 1? Is there a problem with the condition that mean should be more or less equal to variance
+
+One of the main conditions for us to use Poisson regression is to check for overdispersion (if the mean is similar to the variance), if the result is close to 1 then if Poisson can be used, otherwise we will use binomial regression negative
 
 ```{r}
-dispp <- sum(residuals(GLM.2, type="pearson")^2)/GLM.2$df.residual
+#| echo: fenced
+# Code for checking for overdispersion
+dispp <- sum(residuals(GLM3, type="pearson")^2)/GLM3$df.residual
 dispp
 ```
-My dispersion parameter is close to 1 so we can keep it with the poisson model, but yet we will gonna try the other way (negative binomial model)
+::: callout-note
 
-library(MAAS)
-GLM.NM <- glm.nb(deaths ~  offset(log(pop)) + smoke + factor(age), data=poisson_smoking_mort)
-exp(coef(GLM.NM))
-exp(confint(GLM.NM))
+The dispersion parameter is 1.7 so it is near to one.
+
+Then is ok to use the poisson regression.
+
+Yet, just for educational purpuses we are going to test the negative binomial regression
+
+::: 
+
+###### 7. Even though it is not necessary in this case, try to fit a negative binomial model. Does the result differ?
+
+If we don't have the library MASS we should install it
+```{r}
+#install.packages("MASS")
+```
+
+
+```{r}
+#| echo: fenced
+# Code for poisson regression (multivariate analysis)
+library(MASS)
+GLM.NM1 <- glm.nb(inc_case ~  offset(log(pop)) + PEP_19 + factor(dist_cat), data=leprosy_comoros)
+exp(coef(GLM.NM1))
+exp(confint(GLM.NM1))
+
+```
+::: callout-note
 
 The OR and IC are similar in bot models (poisson and negative binomial model)
 
-
+::: 
 
 

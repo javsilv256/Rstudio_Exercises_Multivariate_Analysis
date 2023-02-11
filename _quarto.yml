@@ -10,13 +10,13 @@ website:
   
   navbar: 
     background: primary
-    left:
-      - href: index.qmd
-        text: Homes
-      - about.qmd
-      - text: More
-        menu: 
-          - about.qmd
+#    left:
+#      - href: index.qmd
+#        text: Homes
+#      - about.qmd
+#      - text: More
+#        menu: 
+#          - about.qmd
   sidebar: 
     style: floating
     search: true
@@ -39,7 +39,7 @@ website:
           - "2023-02-09 CaseAssigment.qmd"
           
       - text: "---"
-      - section: "Logistic Regression"
+      - section: "Poisson Regression"
         contents: 
           - "2023-02-10 Poisson Regression Session 1.qmd"
           

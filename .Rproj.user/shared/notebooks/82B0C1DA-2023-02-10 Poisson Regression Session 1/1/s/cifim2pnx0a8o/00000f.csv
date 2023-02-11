@@ -1,0 +1,4 @@
+"0","#| echo: fenced"
+"0","leprosy_comoros$const <- 1"
+"0","table1 <- aggregate(cbind(inc_case, pop) ~ const, data=leprosy_comoros, FUN=sum)"
+"0","table1"

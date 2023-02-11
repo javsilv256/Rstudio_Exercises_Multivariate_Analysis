@@ -37,6 +37,7 @@ onch1302 <- read.csv("C:/Users/pined/OneDrive - Universidad Nacional Mayor de Sa
 #### Part 1
 
 ###### 1. Which are the steps you will go through for classical model selection?
+We did this in previous excercises
 
 ###### 2. Please start by making a table describing the study population. Remember that to get tables with percentages you can use the "proportions" or "prop.table" function around a table (both functions are the same)
 
