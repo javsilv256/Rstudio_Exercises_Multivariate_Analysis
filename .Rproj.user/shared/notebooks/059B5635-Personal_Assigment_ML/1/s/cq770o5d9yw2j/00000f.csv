@@ -1,1 +1,0 @@
-"0","ML17 <- glm(factor(case) ~ factor(bednet) + factor(asset_index) + factor(riskwall) + factor(earthfloor) , family=binomial, data=VL_Bihar)"

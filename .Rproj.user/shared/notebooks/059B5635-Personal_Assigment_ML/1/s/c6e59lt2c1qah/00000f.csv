@@ -1,1 +1,0 @@
-"0","ML20 <- glm(factor(case) ~ factor(bednet) , family=binomial, data=VL_Bihar)"
