@@ -9,7 +9,7 @@ format:
 -   Instituut Voor Tropische Geneeskunde - Antwerp, Belgium
 -   Javier Silva-Valencia
 
-## Step by Step - Selection of variables for modeling
+## Step by Step
 
 ##### Import data
 

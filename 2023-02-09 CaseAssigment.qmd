@@ -7,7 +7,7 @@ format:
 
 -   Instituut Voor Tropische Geneeskunde - Antwerp, Belgium
 
-## Step by Step - Selection of variables for modeling
+## Step by Step 
 
 ##### Import data
 

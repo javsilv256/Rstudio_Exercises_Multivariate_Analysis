@@ -3,7 +3,7 @@
     "path": "C:/Users/pined/OneDrive - Universidad Nacional Mayor de San Marcos/Javier 2022/Belgica/AC2/Rstudio_Exercises_q/index.qmd",
     "project_path": "index.qmd",
     "type": "quarto_markdown",
-    "hash": "1039423207",
+    "hash": "2505714216",
     "contents": "",
     "dirty": false,
     "created": 1675988467342.0,
@@ -17,15 +17,15 @@
         "docOutlineVisible": "1",
         "rmdVisualCollapsedChunks": "",
         "rmdVisualModeLocation": "38:0",
-        "cursorPosition": "8,116",
-        "scrollLine": "0"
+        "cursorPosition": "13,125",
+        "scrollLine": "2"
     },
     "folds": "",
-    "lastKnownWriteTime": 1676115261,
+    "lastKnownWriteTime": 1676116396,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1676115261215,
+    "last_content_update": 1676116396537,
     "read_only": false,
     "read_only_alternatives": []
 }

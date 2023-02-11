@@ -4,14 +4,14 @@ title: "Home: Lecture notes"
 
 ## Multivariate Analysis Course
 
-Welcome to the Lecture notes for the Multivariate Analysis Course at the Institute of Tropical Medicine in Antwerp. These notes were made by ***Javier Silva-Valencia*** as reference for the solutions to the exercises given in class. 
+Lecture notes for the Multivariate Analysis Course at the Institute of Tropical Medicine in Antwerp. Welcome! These notes were made by ***Javier Silva-Valencia*** as reference for the solutions to the exercises given in class. 
 
 All lecture notes and this webpage were created using RStudio with Quarto. (I didn't know it could do that either.) It's not perfect, but I hope it's useful!
 
 If you find any errors, please let me know, thanks!
 
 ## Disclaimer
-Please note: These notes are a reflection of my own understanding and may not exactly match all the codes provided in class.While I've done my best to ensure their accuracy, please use them as a guide and always verify the solutions with your own understanding and the course materials.
+Please note: These notes are a reflection of my own understanding and may not exactly match all the codes provided in class. While I've done my best to ensure their accuracy, please use them as a guide and always verify the solutions with your own understanding and the course materials.
 
 
 ## Navigation
