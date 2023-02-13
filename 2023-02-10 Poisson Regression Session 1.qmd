@@ -29,8 +29,6 @@ leprosy_comoros <- read.csv("C:/Users/pined/OneDrive - Universidad Nacional Mayo
 
 What was the incidence rate? 
 
-::: callout-note
-    
     The exercise is asking to calculate the total number of cases and population    
     during the year of the study, using the command aggregate.
 
@@ -41,6 +39,7 @@ leprosy_comoros
     
     The aggregate command could respond to the following request: 
     "Please agregate( or sum) "inc_case" and "population" by each category of PEP_19
+    
 ```{r}
 #| echo: fenced
 table1 <- aggregate(cbind(inc_case, pop) ~ PEP_19, data=leprosy_comoros, FUN=sum)

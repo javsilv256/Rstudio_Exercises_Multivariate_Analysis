@@ -1,0 +1,3 @@
+"0","library(survival)"
+"0","mod2 <- survfit(Surv(SurvivalTime, event) ~ Therapy, data=dat)"
+"0","plot(mod2, mark.time=TRUE)"

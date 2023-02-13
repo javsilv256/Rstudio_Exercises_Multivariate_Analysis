@@ -1,14 +1,14 @@
 {
-    "id": "BAE5F739",
-    "path": "C:/Users/pined/OneDrive - Universidad Nacional Mayor de San Marcos/Javier 2022/Belgica/AC2/Rstudio_Exercises_q/about.qmd",
-    "project_path": "about.qmd",
+    "id": "3E2A0452",
+    "path": "C:/Users/pined/OneDrive - Universidad Nacional Mayor de San Marcos/Javier 2022/Belgica/AC2/Rstudio_Exercises_q/index.qmd",
+    "project_path": "index.qmd",
     "type": "quarto_markdown",
-    "hash": "2293670248",
+    "hash": "0",
     "contents": "",
     "dirty": false,
-    "created": 1675988501290.0,
+    "created": 1675988467342.0,
     "source_on_save": false,
-    "relative_order": 3,
+    "relative_order": 1,
     "properties": {
         "rmdVisualMode": "false",
         "rmdVisualWrapConfigured": "true",
@@ -16,16 +16,16 @@
         "Source": "Source",
         "docOutlineVisible": "1",
         "rmdVisualCollapsedChunks": "",
-        "rmdVisualModeLocation": "2:0",
-        "cursorPosition": "14,129",
-        "scrollLine": "0"
+        "rmdVisualModeLocation": "38:0",
+        "cursorPosition": "13,243",
+        "scrollLine": "9"
     },
     "folds": "",
-    "lastKnownWriteTime": 1675988509,
+    "lastKnownWriteTime": 1676277620,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1675988509384,
+    "last_content_update": 1676277620193,
     "read_only": false,
     "read_only_alternatives": []
 }
