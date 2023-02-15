@@ -3,14 +3,43 @@ title: "2023-01-31. Session 1"
 format: 
   html:
     self-contained: true
+    code-line-numbers: true
+custom_title_page: false
+filters:
+  - lightbox
+lightbox: auto
 ---
 
--   Instituut Voor Tropische Geneeskunde - Antwerp, Belgium
--   Javier Silva-Valencia
+---
+subtitle: "Linear Regression - Session 1"
+date: 2023-01-31
 
-## Step by Step
+author:
+  - name: Javier Silva-Valencia
+    orcid: 0000-0002-5982-2821
+    email: javier.silva@unmsm.edu.pe
+    affiliations:
+      - name: Instituut Voor Tropische Geneeskunde. Antwerp-Belgium
 
-##### Import data
+language: 
+  title-block-author-single: "Writer"
+  
+abstract: The exercise begins by asking you to create a scatterplot to see the relation between two variables. Then to create a bivariate linear regresion.
+---
+
+---
+
+---
+
+
+### Starting the Exercise
+
+Instructions: 
+
+An ecological study has looked into the relationship between the incidence of low birth weight ("low birth weight per 100 births") and perinatal mortality ("perinatal mortality per 100 births") in health districts of a certain region.
+
+
+#### Importing data
 
 Importing a CSV database under the name of lbwpmor, with "," as separator, and with "." as decimal:
 
@@ -20,28 +49,23 @@ lbwpmor <- read.csv("C:/Users/pined/OneDrive - Universidad Nacional Mayor de San
 
 We assume that all variables ok to start (we dont need to transform or create variables)
 
-------------------------------------------------------------------------
 
-------------------------------------------------------------------------
-
-### Starting the Exercise: Low birth and perinatal mortality
-
-An ecological study has looked into the relationship between the incidence of low birth weight ("low birth weight per 100 births") and perinatal mortality ("perinatal mortality per 100 births") in health districts of a certain region.
-
-##### 1. Finding Correlation (To assume linearity)
+#### Step 1
+Finding if there is a Correlation between inclbw and permor (This is to assume linearity, there are other ways buy we will start this exercise doing this)
 
 ```{r}
-#Code in R:
+#Code in for a correlation test:
   cor(lbwpmor$inclbw, lbwpmor$permor)
 ```
 
-::: callout-note
+::: callout-tip
 As a result: we have an r of 0.68. It is a moderate strong positive correlation
 :::
 
 ------------------------------------------------------------------------
 
-##### 2. Doing the Scatterplot
+#### Step 2
+Doing the Scatterplot
 
 ```{r}
 #| echo: fenced
@@ -52,13 +76,14 @@ As a result: we have an r of 0.68. It is a moderate strong positive correlation
   abline(lm(permor~inclbw, data = lbwpmor), col = "blue")
 ```
 
-::: callout-note
-As a result: we can see a linear positive correlation
+::: callout-tip
+As a result: we can see in the graph the linear positive correlation
 :::
 
-------------------------------------------------------------------------
 
-##### 3. Doing the Linear regresion
+#### Step 3
+
+Doing the Linear regresion for only inclbw and permor (bivariate)
 
 ```{r}
 #| echo: fenced
@@ -67,7 +92,7 @@ lmHeight = lm(permor ~ inclbw, data = lbwpmor)
 summary(lmHeight)
 ```
 
-::: callout-note
+::: callout-tip
 -A. As a result: we can recreate the formula with the data we obtained
 
     * y = a+b(x)
@@ -105,7 +130,8 @@ summary(lmHeight)
         "The value of 0.68 suggest a strong positive association"
 :::
 
-##### 4. Predict "y" where X=8
+#### Step 4
+Predict "y" when X is "8"
 
 Before we have already calculated the formula: "Y= 0.42 +0.147(X)" So we just need to replace the "X"
 
@@ -114,9 +140,9 @@ Before we have already calculated the formula: "Y= 0.42 +0.147(X)" So we just ne
 0.42 +(0.147*8)
 ```
 
-::: callout-note
-Clarification: Using the Linear regression formula above we can say that
+::: callout-tip
+So, using the Linear regression formula above we can say that
 
-    when "low birth weight per 100 births" is 8 
-    the "perinatal mortality per 100 births" may be 1.596
+    When "low birth weight" is 8 
+    the "perinatal mortality" may be 1.596
 :::
