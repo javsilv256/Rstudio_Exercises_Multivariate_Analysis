@@ -1,0 +1,199 @@
+---
+title: "2023-02-14 Session 2"
+format: 
+  html:
+    self-contained: true
+editor_options: 
+  chunk_output_type: inline
+---
+
+-   Instituut Voor Tropische Geneeskunde - Antwerp, Belgium
+
+## Step by Step
+
+
+```{r}
+install.packages("tidyselect")
+#install.packages("survminer")
+library(survminer)
+```
+
+### Starting the Exercise
+
+The data in ExerciseII.xls are results of an (hypothetical) observational cancer trial. The aim of the study was to compare two treatment strategies for a brain tumour: one of consists of local radiation (control regimen), one of a combination of local radiation and aggressive chemotherapy (test regimen). The endpoint of the study was survival duration after therapy.
+
+Use R to explore the data. Describe the patient demographics and survival using Kaplan-Meier curves. Do you think that the test regimen prolongs survival? Analyze the data further using Cox-regression. Describe your conclusions.
+
+::: callout-note
+Important information: Analysis variable: Time to death Initial time: When the treatment begins End time: time of dead Independent variable: Type of treatment (local radiation vs local+chemotherapy)
+:::
+
+#### 1. First we import the data from an excel file
+
+```{r}
+library(readxl)
+ExerciseII <- read_excel("C:/Users/pined/OneDrive - Universidad Nacional Mayor de San Marcos/Javier 2022/Belgica/AC2/Survival Analysis Exercise Database/Exercises/ExerciseII.xls")
+```
+
+To start working with survival analysis we need an event variable (1 is the event happened, otherwise 0) In this case we have the "died" variable
+
+#### 2. Kaplan-Meyer curve (survival curve) for all the sample
+
+```{r}
+#| echo: fenced
+library(survival)
+mod0 <- survfit(Surv(time, died) ~ 1, data=ExerciseII)
+ggsurvplot(mod0, data=ExerciseII)
+
+plot(mod0, mark.time=TRUE)
+```
+
+#### 3. Kaplan-Meyer curve (survival curve) by group of treatment
+
+```{r}
+#| echo: fenced
+mod1 <- survfit(Surv(time, died) ~ trt, data=ExerciseII)
+plot(mod1, mark.time=TRUE, lty=1:2)
+legend ("top", legend=unique(ExerciseII$trt), lty=1:2)
+```
+
+To see the numbers
+
+```{r}
+mod1
+```
+
+::: callout-note
+Treatment 0 = Control = local radiation = 50% of the population was alive at day 512 Treatment 1 = Intervention = local + chemoteraphy = 50% of the population was alive at day 434
+
+Seems that in treatment 1, people tends to die more quickly
+:::
+
+#### 4. Creating Cox Regresion model (using the classical model)
+
+4.1 Creating Cox regresion with each of the (possible) predictors separately:
+
+Possible predictors: gender, trt an type (could be predictors/counfounders because this is not a clinical trial. In a clinical trial the amount of persons in each group is fixed)
+
+```{r}
+#| echo: fenced
+library(survival)
+Cox1<- coxph(Surv(time, died) ~ trt, data=ExerciseII)
+Cox2<- coxph(Surv(time, died) ~ gender, data=ExerciseII)
+Cox3<- coxph(Surv(time, died) ~ type, data=ExerciseII)
+
+summary(Cox1)
+summary(Cox2)
+summary(Cox3)
+
+```
+
+::: callout-note
+| Factor |  HR   |    95% IC    | p-value |
+|:------:|:-----:|:------------:|:-------:|
+|  trt   | 1.264 | 1.028 1.554  | 0.0264  |
+| gender | 1.034 | 0.8446 1.266 |  0.747  |
+|  type  | 3.519 |  2.83 4.376  | <2e-16 |
+
+Now we select those with p <0.200 (or 0.100 depending on analysis plan) for further modeling
+:::
+
+4.2 Entering the remaining variables in a multivariable models and remove step-by-step the non-significant terms (always removing the least significant factor). "Backwards elimination"
+
+```{r}
+#| echo: fenced
+library(survival)
+Cox4<- coxph(Surv(time, died) ~ trt + type , data=ExerciseII)
+summary(Cox4)
+```
+
+::: callout-note
+Both are significant, so we need to keep both independent variables But, are they ok like that, or there is an interaction?
+:::
+
+4.3 Checking for interaction
+
+```{r}
+#| echo: fenced
+Cox5<- coxph(Surv(time, died) ~ trt * type , data=ExerciseII)
+summary(Cox5)
+```
+
+::: callout-note
+Things to note:
+    Seems that the interaction the treatment effect in the whole sample is no longer significant (HR: 0.8987, pvalue= 0.6260), but it is not true. Because of we are introducing interaction that HR= 0.8987 is the HR only for the local cancer.
+    
+                         HR = 0.899^trt * 5.8185^type * 0.5270^(trt*type)
+                         
+    HR trt for local cancer = 0.899^trt               * 0.5270^(trt*0) 
+    HR trt for local cancer = 0.899                   * 1 
+    HR trt for local cancer = 0.899
+    
+    HR trt for metastatic cancer = 0.899 * 5.8185^1 * 0.5270^(trt*type)
+    
+    HR trt for metastatic cancer = 0.899 * 0.527 = 0.473
+
+Also looking only at interaction p-value (0.0132): seems significant
+
+:::
+
+We need to compare both models
+
+```{r}
+anova(Cox5, Cox4, test="Chisq")
+```
+
+::: callout-note
+There is a significant difference with and without interaction models So we keep with the interaction.
+:::
+
+4.4 Checking HR for each group of interaction
+
+```{r}
+table(ExerciseII$type)
+LocalCancer  <-  subset(ExerciseII, type==0)  #Creating a database for local cancer
+Metastatic  <-  subset(ExerciseII, type==1)    #Creating a database for metastatic
+```
+
+Checking the kaplan meyer curve and cox regressión in each subset
+
+4.4.1 IN LOCAL CANCER
+
+```{r}
+#| echo: fenced
+modLC <- survfit(Surv(time, died) ~ trt, data=LocalCancer)
+plot(modLC, mark.time=TRUE, lty=1:2)
+legend ("top", legend=unique(LocalCancer$trt), lty=1:2)
+```
+
+```{r}
+#| echo: fenced
+CoxLC<- coxph(Surv(time, died) ~ trt, data=LocalCancer)
+summary(CoxLC)
+```
+
+
+
+
+
+4.4.2 IN METASTATIC CANCER
+
+```{r}
+#| echo: fenced
+
+modMC <- survfit(Surv(time, died) ~ trt, data=Metastatic)
+plot(modMC, mark.time=TRUE, lty=1:2)
+legend ("top", legend=unique(Metastatic$trt), lty=1:2)
+
+CoxMC<- coxph(Surv(time, died) ~ trt, data=Metastatic)
+summary(CoxMC)
+```
+Among those with mett cancer,The ones that undergo the new treatment has 54% less hazard of die than the one that went with the traditional treatment.
+
+Among those with mett cancer, getting the new treatment reduces your hazars of dying by 54%
+
+
+HR local cancer = 0.90 
+HR metastatic cancer = 0.46 
+
+Interaction term = 0.46/0.90 = 0.51

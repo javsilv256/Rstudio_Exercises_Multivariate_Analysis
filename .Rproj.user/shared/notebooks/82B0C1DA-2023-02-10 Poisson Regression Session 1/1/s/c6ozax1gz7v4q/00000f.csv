@@ -1,6 +1,0 @@
-"0","dispp <- sum(residuals(GLM4, type=""pearson"")^2)/GLM4$df.residual"
-"0","dispp"
-"1","[1]"
-"1"," 1.703122"
-"1","
-"

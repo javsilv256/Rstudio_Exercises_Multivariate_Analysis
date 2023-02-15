@@ -1,0 +1,4 @@
+"0","#| echo: fenced"
+"0","#Kaplay-Meyer curve"
+"0","modMC <- survfit(Surv(time, died) ~ trt, data=Metastatic)"
+"0","plot(modMC, mark.time=TRUE, lty=1:2)"

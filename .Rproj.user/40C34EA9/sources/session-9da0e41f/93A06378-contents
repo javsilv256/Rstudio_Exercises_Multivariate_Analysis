@@ -55,7 +55,7 @@ website:
         href: https://www.linkedin.com/in/javier-silva-valencia/
         
   page-footer: 
-    center: "Copyright 2023, Javier Silva-Valencia" 
+    center: "Copyright 2023, Javier Silva-Valencia. javier.silva@unmsm.edu.pe" 
     right: 
       - icon: github
         href: https://github.com/

@@ -1,0 +1,7 @@
+"2","Warning in gzfile(file, ""wb"") :"
+"2","
+ "
+"2"," cannot open compressed file 'C:/Users/pined/OneDrive - Universidad Nacional Mayor de San Marcos/Javier 2022/Belgica/AC2/Rstudio_Exercises_q/.Rproj.user/shared/notebooks/2FBFB7B6-2023-02-14 Survival Analysis Session 2/1/40C34EA9a2d31c43/caz31jelktmrd_t/d358b952008443d5bc23233b4ffd9dfa.snapshot', probable reason 'No such file or directory'
+"
+"2","Error in gzfile(file, ""wb"") : cannot open the connection
+"

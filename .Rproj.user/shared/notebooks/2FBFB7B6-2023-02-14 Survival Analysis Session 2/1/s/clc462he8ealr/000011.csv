@@ -1,0 +1,3 @@
+"0","#| echo: fenced"
+"0","library(survival)"
+"0","mod0 <- survfit(Surv(time, died) ~ 1, data=ExerciseII)"

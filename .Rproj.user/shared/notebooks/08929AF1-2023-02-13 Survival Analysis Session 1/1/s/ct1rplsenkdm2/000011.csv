@@ -1,1 +1,0 @@
-"0","dat$event <- ifelse(dat$SurvivalStatus == ""dead"", 1, 0)"
