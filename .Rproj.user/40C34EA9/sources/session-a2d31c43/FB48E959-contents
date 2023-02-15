@@ -4,7 +4,7 @@ title: "Home: Lecture notes"
 
 ## Multivariate Analysis Course
 
-Welcome! This are Lecture notes for the Multivariate Analysis Course at the Institute of Tropical Medicine in Antwerp.These notes were made as reference for the solutions to the exercises given in class.
+Welcome! This are Lecture notes for the Multivariate Analysis Course at the Institute of Tropical Medicine in Antwerp. These notes were made as reference for the solutions to the exercises given in class.
 
 All lecture notes and this webpage were created using **RStudio** with Quarto. (I didn't know it could do that either.) It's not perfect, but I hope it's useful!
 
@@ -22,7 +22,7 @@ Use the sidebar on the left to navigate through the different exercises.
 
 **Author**
 
-*Javier Silva-Valencia*, *javier.silva@unmsm.edu.pe*
+*Javier Silva-Valencia*, *javier.silva\@unmsm.edu.pe*
 
 **Contributors**
 
@@ -31,3 +31,6 @@ Use the sidebar on the left to navigate through the different exercises.
 *Misabe'o (Pacifique) Nunda*
 
 
+<div style="text-align: right">
+[2023-01-31 Linear Regresion Session 1](2023-01-31%20Linear%20Regresion%201.qmd)
+</div>

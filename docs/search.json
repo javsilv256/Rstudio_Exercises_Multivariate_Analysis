@@ -186,7 +186,7 @@
     "href": "index.html",
     "title": "Home: Lecture notes",
     "section": "",
-    "text": "Welcome! This are Lecture notes for the Multivariate Analysis Course at the Institute of Tropical Medicine in Antwerp.These notes were made as reference for the solutions to the exercises given in class.\nAll lecture notes and this webpage were created using RStudio with Quarto. (I didn’t know it could do that either.) It’s not perfect, but I hope it’s useful!\nIf you find any errors, please let me know, thanks!"
+    "text": "Welcome! This are Lecture notes for the Multivariate Analysis Course at the Institute of Tropical Medicine in Antwerp. These notes were made as reference for the solutions to the exercises given in class.\nAll lecture notes and this webpage were created using RStudio with Quarto. (I didn’t know it could do that either.) It’s not perfect, but I hope it’s useful!\nIf you find any errors, please let me know, thanks!"
   },
   {
     "objectID": "index.html#disclaimer",
@@ -207,6 +207,6 @@
     "href": "index.html#creators",
     "title": "Home: Lecture notes",
     "section": "Creators",
-    "text": "Creators\nAuthor\nJavier Silva-Valencia, javier.silva@unmsm.edu.pe\nContributors\nSamuel (Baba) Rashidi Assani\nMisabe’o (Pacifique) Nunda"
+    "text": "Creators\nAuthor\nJavier Silva-Valencia, javier.silva@unmsm.edu.pe\nContributors\nSamuel (Baba) Rashidi Assani\nMisabe’o (Pacifique) Nunda\n\n2023-01-31 Linear Regresion Session 1"
   }
 ]
