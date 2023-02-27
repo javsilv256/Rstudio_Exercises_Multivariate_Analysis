@@ -1,0 +1,2 @@
+"0","top <- subset(Q1_B, subset= FSN < 52032)"
+"0","bottom <- subset(Q1_B, subset= FSN >= 52032)"
