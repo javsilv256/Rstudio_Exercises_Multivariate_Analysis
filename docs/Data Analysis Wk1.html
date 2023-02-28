@@ -1459,6 +1459,7 @@ function fuseSearch(query, fuse, fuseOptions) {
 }
 </script>
 <meta name="quarto:offset" content="./">
+<link href="./Data Analysis Wk2.html" rel="next">
 <script>const sectionChanged = new CustomEvent("quarto-sectionChanged", {
   detail: {},
   bubbles: true,
@@ -4124,6 +4125,11 @@ vertical-align: -.125em;
   <a href="./Data Analysis Wk1.html" class="sidebar-item-text sidebar-link active">Data Analysis Wk1</a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Data Analysis Wk2.html" class="sidebar-item-text sidebar-link">Data Analysis Wk2</a>
+  </div>
+</li>
       </ul>
 </li>
     </ul>
@@ -4146,8 +4152,9 @@ vertical-align: -.125em;
 <a href="#exercise-2" id="toc-exercise-2" class="nav-link" data-scroll-target="#exercise-2">Exercise 2</a>
   <ul>
 <li><a href="#renaming-variables" id="toc-renaming-variables" class="nav-link" data-scroll-target="#renaming-variables">Renaming variables</a></li>
-  <li><a href="#renaming-observations" id="toc-renaming-observations" class="nav-link" data-scroll-target="#renaming-observations">Renaming observations</a></li>
+  <li><a href="#replacing-observations" id="toc-replacing-observations" class="nav-link" data-scroll-target="#replacing-observations">Replacing observations</a></li>
   <li><a href="#long-to-wide" id="toc-long-to-wide" class="nav-link" data-scroll-target="#long-to-wide">Long to Wide</a></li>
+  <li><a href="#replacing-na" id="toc-replacing-na" class="nav-link" data-scroll-target="#replacing-na">Replacing NA</a></li>
   </ul>
 </li>
   </ul></nav>
@@ -4189,7 +4196,7 @@ vertical-align: -.125em;
 <div>
   <div class="abstract">
     <div class="abstract-title">Abstract</div>
-    Today we had an introduction to TMRC dataset.
+    Today we had an introduction to how to create subsets by row, subset by colls, appending (joining up-down), merging (joining left-righ), and how to reshape the database
   </div>
 </div>
 
@@ -4631,7 +4638,7 @@ Tip
  $ daysin: int  120 365 -1 210 180 360 360 -1 150 90 ...</code></pre>
 </div>
 </div>
-</section><section id="renaming-observations" class="level4"><h4 class="anchored" data-anchor-id="renaming-observations">Renaming observations</h4>
+</section><section id="replacing-observations" class="level4"><h4 class="anchored" data-anchor-id="replacing-observations">Replacing observations</h4>
 <div class="cell" data-hash="Data-Analysis-Wk1_cache/html/unnamed-chunk-13_9e41bd995a5ae86e3bf70abaa4c367b2">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r numberLines number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="fu">table</span>(Q1_B_1<span class="sc">$</span>anim)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -4722,8 +4729,22 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>We observe: - That now we have less observations (7147)(before was 9029 obs) (so some houses had more than one animal) - There are a lot of NA (households than doesnt have that animal)</p>
+<p>We observe: - That now we have less observations (7147)(before was 9029 obs) (so some houses had more than one animal) - There are a lot of NA (households than doesn’t have that animal) - There are also some -1</p>
 </div>
+</div>
+</section><section id="replacing-na" class="level4"><h4 class="anchored" data-anchor-id="replacing-na">Replacing NA</h4>
+<p>We want to replace the NA and the -1 to Zero</p>
+<div class="cell" data-hash="Data-Analysis-Wk1_cache/html/unnamed-chunk-15_1ece7529c794203353d09da14a803d84">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r numberLines number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a><span class="fu">names</span>(Newtable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] &quot;FSN&quot;         &quot;count_Goat&quot;  &quot;dist_Goat&quot;   &quot;indor_Goat&quot;  &quot;daysin_Goat&quot;
+ [6] &quot;count_Poul&quot;  &quot;dist_Poul&quot;   &quot;indor_Poul&quot;  &quot;daysin_Poul&quot; &quot;count_Buff&quot; 
+[11] &quot;dist_Buff&quot;   &quot;indor_Buff&quot;  &quot;daysin_Buff&quot; &quot;count_Cows&quot;  &quot;dist_Cows&quot;  
+[16] &quot;indor_Cows&quot;  &quot;daysin_Cows&quot; &quot;count_Pigs&quot;  &quot;dist_Pigs&quot;   &quot;indor_Pigs&quot; 
+[21] &quot;daysin_Pigs&quot; &quot;count_Dogs&quot;  &quot;dist_Dogs&quot;   &quot;indor_Dogs&quot;  &quot;daysin_Dogs&quot;
+[26] &quot;count_Othe&quot;  &quot;dist_Othe&quot;   &quot;indor_Othe&quot;  &quot;daysin_Othe&quot;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r numberLines number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a>Q1_B_1<span class="sc">$</span>daysin[Q1_B_1<span class="sc">$</span>anim <span class="sc">==</span><span class="st">&quot;Buffaloes&quot;</span>] <span class="ot">&lt;-</span> <span class="st">&quot;Buff&quot;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
@@ -4859,7 +4880,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./Data Analysis Wk2.html" class="pagination-link">
+        <span class="nav-page-text">Data Analysis Wk2</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
       <div class="nav-footer-center">Copyright 2023, Javier Silva-Valencia. javier.silva@unmsm.edu.pe</div>
