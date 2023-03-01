@@ -1,0 +1,1 @@
+"0","pcamod <- princomp(~own_Radio+own_Mobile+own_Sewing_Machine++own_Watch+own_Pressure_Cooker+own_Chairs+own_Tables+own_Bicycle+own_Motor_Cycle+own_Electric_Fan+brick_wall+ own_bov, cor=TRUE, data= assets3)"

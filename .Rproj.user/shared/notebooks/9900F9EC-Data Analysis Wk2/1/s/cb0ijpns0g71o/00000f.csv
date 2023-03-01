@@ -1,5 +1,5 @@
-"0","round(sapply(assets, FUN=mean),3)   #To display the mean of each variable with 3
-"
+"0","#summary(assets)"
+"0","round(sapply(assets, FUN=mean),3)   #To display the mean of each variable with 3 decimals"
 "1","                 FSN "
 "1","           own_Radio "
 "1","       own_CD_Player "

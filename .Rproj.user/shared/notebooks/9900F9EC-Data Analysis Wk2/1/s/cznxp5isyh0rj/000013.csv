@@ -1,0 +1,8 @@
+"0","assets3$asset_index <- NA"
+"0","assets3$asset_index[assets3$PC1 >= -2.11118368   & assets3$PC1 <=-1.66100172  ] <- ""1"""
+"0","assets3$asset_index[assets3$PC1 >-1.66100172    & assets3$PC1 <=-0.98271146   ] <- ""2"""
+"0","assets3$asset_index[assets3$PC1 >-0.98271146    & assets3$PC1 <=-0.06987735    ] <- ""3"""
+"0","assets3$asset_index[assets3$PC1 >-0.06987735     & assets3$PC1 <=1.45281527    ] <- ""4"""
+"0","assets3$asset_index[assets3$PC1 >1.45281527     & assets3$PC1 <=7.18120558  ] <- ""5"""
+"0",""
+"0",""

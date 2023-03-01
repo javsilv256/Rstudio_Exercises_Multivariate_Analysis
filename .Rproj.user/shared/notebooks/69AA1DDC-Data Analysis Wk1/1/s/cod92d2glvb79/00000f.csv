@@ -1,4 +1,8 @@
 "0","Rigth <- subset(Q1_B, select=c(""FSN"", ""Other_Floor_Mat"", ""Is_Floor_Damp"", ""Roof_Material"", ""Other_Roof_Material"", ""Wall_Material"", ""Other_Wall_Material"", ""Windows_in_Room"", ""Granaries_in_HH"", ""Source_Drink_Water"", ""Other_Src_Drink_Wat"", ""Toilet_Facility"", ""Other_Toilet_Fac"", ""Cooking_Fuel"", ""Other_Cooking_Fuel"", ""Source_Light"", ""Other_Source_Light"", ""Electricity_in_HH"", ""No_Of_Rooms"", ""No_Sleeping_Rooms""))"
+"0",""
+"0","#Or select the opposite (With a ""-"" in front of the c):"
+"0","#Rigth <- subset(Q1_B, select=-c(""ID"", ""Neem_Tree"", ""Neem_Tree_Distance"", ""Neem_Tree_Size"", ""Neem_Tree_Age"", ""Neem_Tree_Usage"", ""Neem_Tree_Use_Other"", ""Bamboo_Tree"", ""Bamboo_Tree_Dist"", ""Banana_Tree"", ""Banana_Tree_Dist"", ""Rice_Field"", ""Rice_Field_Dist"", ""Perm_Water_Body"", ""Perm_Wat_Body_Dist"",  ""Wat_Body_Mid_Point"", ""No_Mosquito_Net"", ""Sprayed_2010"", ""Sprayed_2009"", ""Floor_Material""))"
+"0",""
 "0","str(Rigth)"
 "1","'data.frame':	"
 "1",""

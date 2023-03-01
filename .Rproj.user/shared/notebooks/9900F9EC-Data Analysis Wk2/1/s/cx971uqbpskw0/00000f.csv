@@ -1,4 +1,0 @@
-"0","#First I need only a dataset with FSN and WallMaterial variables"
-"0","hlp2 <- subset(Q1_B, select = c(FSN, Wall_Material)"
-"2","Error: Incomplete expression: hlp2 <- subset(Q1_B, select = c(FSN, Wall_Material)
-"
