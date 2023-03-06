@@ -1,0 +1,4 @@
+"0","anova(GLM.6, GLM.7, test=""Chisq"")"
+"2","Error in anova.glmlist(c(list(object), dotargs), dispersion = dispersion,  : 
+  models were not all fitted to the same size of dataset
+"

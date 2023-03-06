@@ -1,0 +1,4 @@
+"0","final_dataset$own_buf <- ifelse(final_dataset$count_Buf > 0, TRUE, FALSE)"
+"0","final_dataset$own_cow <- ifelse(final_dataset$count_Cow > 0, TRUE, FALSE)"
+"0","final_dataset$own_Goa <- ifelse(final_dataset$count_Goa > 0, TRUE, FALSE)"
+"0","final_dataset$own_Pou <- ifelse(final_dataset$count_Pou > 0, TRUE, FALSE)"

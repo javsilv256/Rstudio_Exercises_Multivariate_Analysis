@@ -1,0 +1,2 @@
+"0","final_dataset$hh_size <- ave(final_dataset$FSN, final_dataset$FSN, FUN = length)"
+"0","#Calculate the"

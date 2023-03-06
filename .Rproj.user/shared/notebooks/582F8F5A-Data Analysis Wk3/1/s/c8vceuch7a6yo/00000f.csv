@@ -1,0 +1,6 @@
+"0","final_dataset$own_buf <- ifelse(final_dataset$count_Buf > 0, TRUE, FALSE)"
+"0","final_dataset$own_cow <- ifelse(final_dataset$count_Cow > 0, TRUE, FALSE)"
+"0","final_dataset$own_goat <- ifelse(final_dataset$count_Goat > 0, TRUE, FALSE)"
+"2","Error in `$<-.data.frame`(`*tmp*`, own_goat, value = logical(0)) : 
+  replacement has 0 rows, data has 81214
+"

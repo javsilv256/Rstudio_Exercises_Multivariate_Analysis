@@ -1,0 +1,6 @@
+"0","final_dataset$risk_wall <- ifelse("
+"0","  final_dataset$Wall_Material %in% c(6,164,166), 2, ifelse("
+"0","    final_dataset$Wall_Material %in% 162:163, 1, ifelse("
+"0","      final_dataset$Wall_Material == 165, 3, NA)))"
+"0",""
+"0","final_dataset$risk_wall <- as.factor(final_dataset$risk_wall)"

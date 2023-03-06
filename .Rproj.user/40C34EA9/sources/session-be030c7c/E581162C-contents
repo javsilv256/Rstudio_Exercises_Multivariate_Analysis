@@ -1,0 +1,799 @@
+# Start by setting your working directory
+setwd("L:/Public health/Education/E. Course Published/01_Current course material/MPH2223/T3_Opt Data Analysis/Materials_2223")
+
+# Use read.csv to upload your dataset. You can also use 'File', 'Import dataset', 
+# 'from text(base)'. If you do that, you can remove the pathway since it was already set.
+
+Q1_B <- read.csv("Q1_B.csv")
+
+# Use 'summary' and 'str' to get an overview of your dataset
+summary(Q1_B$FSN)
+
+# As an exercise we split the dataset into two, the to 6688 obeservations and the 
+# bottom 689 observations.
+top <- subset(Q1_B, subset= FSN < 52032)
+bottom <- subset(Q1_B, subset= FSN >= 52032)
+
+# Check how it worked out, do the numbers of observations of top and bottom combined
+# match the numbers of Q1_B? 
+str(Q1_B)
+str(top)
+str(bottom)
+6688 + 6689
+
+# Now we merge them again and check whether the merged table is the same as Q1_B,
+# 13377 obs. of  40 variables
+merged_top_bottom <- rbind(top,bottom)
+str(merged_top_bottom)
+str(Q1_B)
+
+# Now we split Q1-B into two datasets, left and right, not by observation but by
+# variable name. In left we retain the first 7 variables, including FSN, in right
+# we retain all the others, including FSN. This can again be done with the subset
+# command. In select=c() we list all the variables to be retained. If you put a 
+# minus sign in front, select=-(), all variables not listed will be retained. I keep
+# FSN in both datasets because that is the variable I will later use to merge. FSN
+# is the variable that uniquely identifies each household in this dataset. So we 
+# have data on 13377 households. 
+
+left <- subset(Q1_B, select=c(FSN, Neem_Tree, Neem_Tree_Distance, Neem_Tree_Size,
+                              Neem_Tree_Age, Neem_Tree_Usage, Neem_Tree_Use_Other))
+
+right <- subset(Q1_B, select=-c(Neem_Tree, Neem_Tree_Distance, Neem_Tree_Size,
+                              Neem_Tree_Age, Neem_Tree_Usage, Neem_Tree_Use_Other))
+# Check how it worked. In left you should have 13377 obs. of  7 variables, in right
+# you should have 13377 obs. of  34 variables. 34+7 = 41 because FSN is in both. 
+str(left)
+str(right)
+
+# If you merge the two again on FSN you will again have a dataset with
+# 13377 obs. of  40variables
+merge_LR <- merge(left, right, all=TRUE, by="FSN")
+str(merge_LR)
+
+
+# No open table Q1_B_1.csv, which has data on animals. Please note that it has 9029
+# observations and if you look at the first 6 lines (command 'head') you will see that
+# FSN is not unique, some FSN's appear multiple times, others are missing. 
+Q1_B_1 <- read.csv("Q1_B_1.csv")
+str(Q1_B_1)
+head(Q1_B_1)
+
+# In this table there is one line per household for each type of animal. If a household
+# does not own any animals there will be no lines.To be able to merge this table with
+# the other tables containing household data, we need to reshape it to wide, so each
+# household (FSN) has one line. In preparation I will first rename the variable names
+# into something shortee, e.g. 'anim' instead of 'Animal_Name' etc. Check how it worked
+# with 'str' and 'head'
+names(Q1_B_1)
+names(Q1_B_1)[c(2,3,4,5,6)]<-c("anim","count", "dist","indoor", "daysin")
+str(Q1_B_1)
+head(Q1_B_1)
+
+# The contents of 'anim' still has very long names, such as 'Poultry (chickens, ducks, pigeon)',
+# I want to rename into something shorter e.g. 'poul'. For the other animals I used 
+# the names 'Buf', 'Cow', 'Dog' and 'Pig'. 
+
+table(Q1_B_1$anim)
+
+Q1_B_1$anim[Q1_B_1$anim == "Buffaloes"] <- "Buf"
+Q1_B_1$anim[Q1_B_1$anim == "Cows/Oxen"] <- "Cow"
+Q1_B_1$anim[Q1_B_1$anim == "Dogs"] <- "Dog"
+Q1_B_1$anim[Q1_B_1$anim == "Goats"] <- "Goat"
+Q1_B_1$anim[Q1_B_1$anim == "Pigs"] <- "Pig"
+Q1_B_1$anim[Q1_B_1$anim == "Poultry (chickens, ducks, pigeon)"] <- "Poul"
+
+# See what the table looks like now. 
+str(Q1_B_1)
+head(Q1_B_1, 10)
+
+# variable names and contents of 'anim' are short single syllable words, now I can 
+# combine them while reshaping to wide. My ID variable will be FSN, so I will get 
+# one observation by FSN. My 'time' variable is 'anim', so for each 'anim' I will 
+# get a count, a distance (dist), whether it's kept indoor (indoor) and how many
+# days it's kept indoor (daysin). Check how the reshape command worked out. 
+
+animals <-reshape(Q1_B_1, direction = "wide", timevar = "anim", idvar="FSN", 
+                  v.names=c("count", "dist", "indoor", "daysin"), sep="_")
+str(animals)
+head(animals, 10)
+
+# You will have a lot of 'NA', which means the household does not own this kind 
+# of animal. Also there are -1 values, which means the same. We can replace them 
+# all by 0, except for the distance variable. There NA should remain NA because if
+# you do not have an animal the distance at which you keep it is not 0 but it is NA. 
+# Below I make the necessary changes. 
+
+animals$indoor_Poul[is.na(animals$indoor_Poul)] <- 0
+animals$indoor_Pig[is.na(animals$indoor_Pig)] <- 0
+animals$indoor_Other[is.na(animals$indoor_Other)] <- 0
+animals$indoor_Goat[is.na(animals$indoor_Goat)] <- 0
+animals$indoor_Dog[is.na(animals$indoor_Dog)] <- 0
+animals$indoor_Cow[is.na(animals$indoor_Cow)] <- 0
+animals$indoor_Buf[is.na(animals$indoor_Buf)] <- 0
+
+animals$daysin_Poul[is.na(animals$daysin_Poul) | animals$daysin_Poul == -1] <- 0
+animals$daysin_Pig[is.na(animals$daysin_Pig) | animals$daysin_Pig == -1] <- 0
+animals$daysin_Other[is.na(animals$daysin_Other) | animals$daysin_Other == -1] <- 0
+animals$daysin_Goat[is.na(animals$daysin_Goat) | animals$daysin_Goat == -1] <- 0
+animals$daysin_Dog[is.na(animals$daysin_Dog) | animals$daysin_Dog == -1] <- 0
+animals$daysin_Cow[is.na(animals$daysin_Cow) | animals$daysin_Cow == -1] <- 0
+animals$daysin_Buf[is.na(animals$daysin_Buf) | animals$daysin_Buf == -1] <- 0
+
+animals$count_Poul[is.na(animals$count_Poul)| animals$count_Poul == -1] <- 0
+animals$count_Pig[is.na(animals$count_Pig)| animals$count_Pig == -1] <- 0
+animals$count_Other[is.na(animals$count_Other)| animals$count_Other == -1] <- 0
+animals$count_Goat[is.na(animals$count_Goat)| animals$count_Goat == -1] <- 0
+animals$count_Dog[is.na(animals$count_Dog)| animals$count_Dog == -1] <- 0
+animals$count_Cow[is.na(animals$count_Cow)| animals$count_Cow == -1] <- 0
+animals$count_Buf[is.na(animals$count_Buf)| animals$count_Buf == -1] <- 0
+
+# Check how it worked out, only the 'dist' variable should still have NA's.
+# Do you have 7147 obs. of  29 variables? How many households do not own animals?
+str(animals)
+head(animals,10)
+13377-7147
+
+# Next is table Q1_B_106 which has data on durable consumer goods ownd by each household.
+# So it also has 13377 observations. For each item it shows the number owned per household.
+# We are going to transform this in an asset index. Items are coded -1 (household 
+# does not own any) to the total number own,e.g. 6 for radio. For each variable we 
+# will create a new variable with prefix 'own_' which should be binary, either 0 
+# (if household does not own any) or 1 (if household owns at least one). 
+
+Q1_B_106 <- read.csv("Q1_B_106.csv")
+str(Q1_B_106)
+head(Q1_B_106,0)
+table(Q1_B_106$Radio)
+Q1_B_106$own_Radio <- ifelse(Q1_B_106$Radio>0,1,0)
+table(Q1_B_106$Radio, Q1_B_106$own_Radio)
+
+Q1_B_106$own_Watch <- ifelse(Q1_B_106$Watch >0,1,0)
+Q1_B_106$own_Video_DVD_Player <- ifelse(Q1_B_106$Video_DVD_Player >0,1,0)
+Q1_B_106$own_Tractor <- ifelse(Q1_B_106$Tractor >0,1,0)
+Q1_B_106$own_Tables <- ifelse(Q1_B_106$Tables >0,1,0)
+Q1_B_106$own_Sofas <- ifelse(Q1_B_106$Sofas >0,1,0)
+Q1_B_106$own_Sewing_Machine <- ifelse(Q1_B_106$Sewing_Machine >0,1,0)
+Q1_B_106$own_Refrigerator <- ifelse(Q1_B_106$Refrigerator >0,1,0)
+Q1_B_106$own_Pressure_Cooker <- ifelse(Q1_B_106$Pressure_Cooker >0,1,0)
+Q1_B_106$own_Non_Mobile_Phone <- ifelse(Q1_B_106$Non_Mobile_Phone >0,1,0)
+Q1_B_106$own_Motor_Cycle <- ifelse(Q1_B_106$Motor_Cycle >0,1,0)
+Q1_B_106$own_Mobile <- ifelse(Q1_B_106$Mobile >0,1,0)
+Q1_B_106$own_Iron <- ifelse(Q1_B_106$Iron >0,1,0)
+Q1_B_106$own_Electric_Fan <- ifelse(Q1_B_106$Electric_Fan >0,1,0)
+Q1_B_106$own_Cupboards <- ifelse(Q1_B_106$Cupboards >0,1,0)
+Q1_B_106$own_Cot_Bed <- ifelse(Q1_B_106$Cot_Bed >0,1,0)
+Q1_B_106$own_Computer <- ifelse(Q1_B_106$Computer >0,1,0)
+Q1_B_106$own_Color_Television <- ifelse(Q1_B_106$Color_Television >0,1,0)
+Q1_B_106$own_Chairs <- ifelse(Q1_B_106$Chairs >0,1,0)
+Q1_B_106$own_CD_Player <- ifelse(Q1_B_106$CD_Player >0,1,0)
+Q1_B_106$own_Car <- ifelse(Q1_B_106$Car >0,1,0)
+Q1_B_106$own_BW_Television <- ifelse(Q1_B_106$BW_Television >0,1,0)
+Q1_B_106$own_Bicycle <- ifelse(Q1_B_106$Bicycle >0,1,0)
+Q1_B_106$own_Animal_Draw_Cart <- ifelse(Q1_B_106$Animal_Draw_Cart >0,1,0)
+
+# Now make a subset retaining only FSN and the 'own_' variables, call it 'assets'
+assets <- subset(Q1_B_106, select=c(FSN,own_Animal_Draw_Cart,own_Bicycle,
+                                    own_BW_Television,own_Car,own_CD_Player,
+                                    own_Chairs,own_Color_Television,
+                                    own_Computer,own_Cot_Bed,own_Cupboards,
+                                    own_Electric_Fan,own_Iron,own_Mobile,
+                                    own_Motor_Cycle,own_Non_Mobile_Phone,
+                                    own_Pressure_Cooker,own_Radio,
+                                    own_Refrigerator,own_Sewing_Machine,
+                                    own_Sofas,own_Tables,own_Tractor,
+                                    own_Video_DVD_Player,own_Watch))
+# In our asset index we want to retain only those items that are owned by at least
+# 5% of households or at most 95%. Those are the items that can help us distinguish
+# different wealth groups.Variables are code 0 and 1, so the mean is the same as 
+# the proportion. The command 'round(sapply(assets, FUN=mean),3)' will give you 
+# a mean with three decimals. Use it to select the varaibles to be retained. 
+summary(assets)
+round(sapply(assets, FUN=mean),3)
+
+# I make a subset of items owned by at least 5%, at most 95% of households and 
+# replace the previous 'assets' table.
+assets <- subset(assets, select=c(FSN,own_Bicycle,own_Chairs,own_Electric_Fan,
+                                  own_Mobile,own_Motor_Cycle,own_Pressure_Cooker,
+                                  own_Radio,own_Sewing_Machine,own_Tables,own_Watch))
+
+# No I will add two more items to my assets table. Whether or not a household owns
+# bovines (cows or buffaloes) and whether or not a house has brick walls. I will 
+# start with the bovines, based on variable 'count-Buf' and 'count_Cow' from the 
+# animals table. First I make a subset with only the relevant variables (plus FSN),
+# which I call 'hlp1'
+
+hlp1 <- subset(animals, select=c(FSN,count_Cow, count_Buf))
+str(hlp1)
+table(hlp1$count_Buf, hlp1$count_Cow)
+
+# Now I create a new variable called 'own_bov' set to 1 if the household owns
+# at least one cow or one buffalo, otherwise it is 0. I then make a subset again
+# retaining only FSN and own_bov. 
+hlp1$own_bov <- NA
+hlp1$own_bov [hlp1$count_Cow == 0 & hlp1$count_Buf==0] <- 0
+hlp1$own_bov [hlp1$count_Cow > 0 | hlp1$count_Buf>0] <- 1
+hlp1 <- subset(hlp1, select=c(FSN,own_bov))
+table(hlp1$own_bov)
+
+# Next is the 'brick_wall' variable, based on 'Wall_Material' in table 'Q1_B. If 
+# you make a table you will see it has values 6,162,163,164,165 and 166. To check
+# what that means upload table Code_list.csv. I called it 'codebook'. You will see
+# the meaning behind the numbers. Let's assume that 6, 'other', is not brick.  
+table(Q1_B$Wall_Material)
+codebook <- read.csv("Code_List.csv")
+View(codebook)
+
+# Again I make a subset retaining only FSN and the relevant variables, I call it hlp2.
+hlp2 <- subset(Q1_B, select=c(FSN,Wall_Material))
+
+str(hlp2)
+table(hlp2$Wall_Material)
+
+# Now I create in hlp2 a new variable 'brick_wall', see below.
+hlp2$brick_wall <- NA
+hlp2$brick_wall[hlp2$Wall_Material %in% c(6,162,163)] <- 0
+hlp2$brick_wall[hlp2$Wall_Material %in% 164:166] <- 1
+
+# I check to see if the recoding worked correctly and then drop the original
+# variable, keeping only FSN and brick_wall.
+table(hlp2$Wall_Material, hlp2$brick_wall)
+hlp2 <- subset(hlp2, select=c(FSN,brick_wall))
+
+# Next step is to merge hlp1 and hlp2 and then assets to make one single assets table
+hlp <- merge(hlp1, hlp2, all=TRUE, by="FSN")
+assets <- merge(assets, hlp, all=TRUE, by="FSN")
+summary(assets)
+
+# You will see that there are 6230 households with 'NA' for own_bov, that is because
+# they do not own any bovines. This should be recoded to 0. 
+
+table(assets$own_bov, useNA = "ifany")
+
+assets$own_bov[is.na(assets$own_bov)] <- 0
+
+table(assets$own_bov)
+
+# Now we are ready to do the PCA, based on 12 variables, use commands below. The 
+# 'pcamod$loadings' command will show us the component loadings, we will retain 
+# only Comp.1. 
+
+pcamod <- princomp(~brick_wall+own_bov+own_Bicycle+own_Chairs+own_Electric_Fan+
+                     own_Mobile+own_Motor_Cycle+own_Pressure_Cooker+own_Radio+
+                     own_Sewing_Machine+own_Tables+own_Watch,
+                   cor=TRUE, data=assets)
+
+pcamod$loadings
+
+# I create a new variable 'PC1' based on the scores of component 1, so it is the 
+# first column on the scores. Next I check the margins of the 5 quintiles of the
+# new variable PC1
+assets$PC1 <- pcamod$scores[ ,1]
+quantile(assets$PC1, probs = seq(0,1, 1/5))
+
+# Now I create a new varaible called 'asset_index' with a value of 1-5, on the 
+# basis of the quintile of PC1. 
+assets$asset_index <- NA
+assets$asset_index[assets$PC1 >= -2.11118368 & assets$PC1 <= -1.66100172] <- "1"
+assets$asset_index[assets$PC1 > -1.66100172 & assets$PC1 <= -0.98271146] <- "2"
+assets$asset_index[assets$PC1 >  -0.98271146 & assets$PC1 <= -0.06987735] <- "3"
+assets$asset_index[assets$PC1 >  -0.06987735 & assets$PC1 <= 1.45281527] <- "4"
+assets$asset_index[assets$PC1 > 1.45281527 & assets$PC1 <= 7.18120558] <- "5"
+
+# I can now drop all the ownership varaibles, as well as brick_wall and PC1,
+# I will retain only FSN and asset_index. 
+assets <- subset(assets, select=c(asset_index,FSN))
+str(assets)
+table(assets$asset_index)
+
+# Now I will merge my assets table with 'Questinnaire_1' which has demographic 
+# information on each household. I call the new table 'merged'.
+Questionnaire_1 <- read.csv("Questionnaire_1.csv")
+str(Questionnaire_1)
+merged <- merge(Questionnaire_1, assets, all=TRUE, by="FSN")
+str(merged)
+head(merged)
+
+# Next I merge 'merged' with the animals table. 
+merged1 <- merge(merged, animals, all=TRUE, by="FSN")
+str(merged1)
+
+# remember there were only 7147 households with animals and 6230 that do not won any.
+# So again I will have to do some recoding, same is in lines 107-129. You can copy-paste
+# but do not forget to change the name of the table, this time it is not 'animals' 
+# but 'merged1'.
+
+merged1$indoor_Poul[is.na(merged1$indoor_Poul)] <- 0
+merged1$indoor_Pig[is.na(merged1$indoor_Pig)] <- 0
+merged1$indoor_Other[is.na(merged1$indoor_Other)] <- 0
+merged1$indoor_Goat[is.na(merged1$indoor_Goat)] <- 0
+merged1$indoor_Dog[is.na(merged1$indoor_Dog)] <- 0
+merged1$indoor_Cow[is.na(merged1$indoor_Cow)] <- 0
+merged1$indoor_Buf[is.na(merged1$indoor_Buf)] <- 0
+
+merged1$daysin_Poul[is.na(merged1$daysin_Poul) | merged1$daysin_Poul == -1] <- 0
+merged1$daysin_Pig[is.na(merged1$daysin_Pig) | merged1$daysin_Pig == -1] <- 0
+merged1$daysin_Other[is.na(merged1$daysin_Other) | merged1$daysin_Other == -1] <- 0
+merged1$daysin_Goat[is.na(merged1$daysin_Goat) | merged1$daysin_Goat == -1] <- 0
+merged1$daysin_Dog[is.na(merged1$daysin_Dog) | merged1$daysin_Dog == -1] <- 0
+merged1$daysin_Cow[is.na(merged1$daysin_Cow) | merged1$daysin_Cow == -1] <- 0
+merged1$daysin_Buf[is.na(merged1$daysin_Buf) | merged1$daysin_Buf == -1] <- 0
+
+merged1$count_Poul[is.na(merged1$count_Poul)| merged1$count_Poul == -1] <- 0
+merged1$count_Pig[is.na(merged1$count_Pig)| merged1$count_Pig == -1] <- 0
+merged1$count_Other[is.na(merged1$count_Other)| merged1$count_Other == -1] <- 0
+merged1$count_Goat[is.na(merged1$count_Goat)| merged1$count_Goat == -1] <- 0
+merged1$count_Dog[is.na(merged1$count_Dog)| merged1$count_Dog == -1] <- 0
+merged1$count_Cow[is.na(merged1$count_Cow)| merged1$count_Cow == -1] <- 0
+merged1$count_Buf[is.na(merged1$count_Buf)| merged1$count_Buf == -1] <- 0
+
+str(merged1)
+
+# Next we merge 'merged1' with table 'Q1_B' which has data on the environment,
+# one observation for each household. The new table we call 'merged2'.
+merged2 <- merge(merged1, Q1_B, all=TRUE, by="FSN")
+str(merged2)
+
+# One final merge left, with individual data in 'Q1_Screening.csv'. Please note
+# that this table has 81214 obs. of  10 variables and that FSN is no longer unique.
+# These are individuals, if they belong to the same household they will have the 
+# same FSN. Still we can merge on FSN because in 'merged2' FSN is unique. 
+
+Q1_Screening <- read.csv("Q1_Screening.csv")
+str(Q1_Screening)
+
+# As a name for the new table I use 'merged3'. Check that it has 81214 obs. of  
+# 87 variables
+merged3 <- merge(Q1_Screening, merged2, all=TRUE, by="FSN")
+str(merged3)
+
+# I will now select only the variables that I am actually planning to use and 
+# give my new subset the name 'final_dataset'.
+final_dataset <- subset(merged3, select=c(asset_index,Bamboo_Tree,Banana_Tree,
+                                          Cooking_Fuel,Floor_Material,FSN,
+                                          Granaries_in_HH,household_head_subcaste,
+                                          indoor_Buf,indoor_Cow,indoor_Goat,
+                                          count_Cow, count_Buf, count_Goat, count_Poul,
+                                          Is_Floor_Damp,member_age,member_sex,
+                                          Neem_Tree,No_Mosquito_Net,
+                                          Perm_Water_Body,Rice_Field,
+                                          Roof_Material,Sprayed_2009,
+                                          Sprayed_2010,
+                                          suffered_vl_since_2nd_survey,
+                                          Wall_Material,Windows_in_Room))
+str(final_dataset)
+
+# Variable 'suffered_vl_since_2nd_survey' is my case variable, I rename it 'case'.
+# Please check that there are 207 cases.
+final_dataset$case <- final_dataset$suffered_vl_since_2nd_survey
+
+# What are the odds of being exposed to a babana tree among cases and non-cases?
+# Whether you calculate manually, use EPISTATS or EpiR or logistic regression,
+# the Odds ratio should be 0.63.
+table(final_dataset$Banana_Tree, final_dataset$case)
+(164/43)/(69585/11422)
+
+library(EpiStats)
+cc(final_dataset, "case", "Banana_Tree")
+
+library(epiR)
+epi.2by2(table(final_dataset$case, final_dataset$Banana_Tree), method = "cross.sectional")
+
+LR_Model1 <- glm(case ~ Banana_Tree, family=binomial, data=final_dataset)
+summary(LR_Model1)
+exp(coef(LR_Model1))
+
+# Next I check for an association between case and asset index. First make a table
+# and manually calculate odds ratios. 
+prop.table(table(final_dataset$asset_index,final_dataset$case),margin=1)
+
+OR1_2 <- (60/12874)/(56/15354)
+OR1_3 <- (36/15777)/(56/15354)
+OR1_4 <- (38/17274)/(56/15354)
+OR1_5 <- (17/19728)/(56/15354)
+
+OR1_2
+OR1_3
+OR1_4
+OR1_5
+
+# Make 4 dummies comapring each of the other levels of asset index to level 1
+final_dataset$asset12 <- NA
+final_dataset$asset12[final_dataset$asset_index %in% 1] <- FALSE
+final_dataset$asset12[final_dataset$asset_index %in% 2] <- TRUE
+final_dataset$asset12[final_dataset$asset_index %in% 3:5] <- NA
+
+final_dataset$asset13 <- NA
+final_dataset$asset13[final_dataset$asset_index %in% 1] <- FALSE
+final_dataset$asset13[final_dataset$asset_index %in% 2] <- NA
+final_dataset$asset13[final_dataset$asset_index %in% 3] <- TRUE
+final_dataset$asset13[final_dataset$asset_index %in% 4:5] <- NA
+
+final_dataset$asset14 <- NA
+final_dataset$asset14[final_dataset$asset_index %in% 1] <- FALSE
+final_dataset$asset14[final_dataset$asset_index %in% 2:3] <- NA
+final_dataset$asset14[final_dataset$asset_index %in% 4] <- TRUE
+final_dataset$asset14[final_dataset$asset_index %in% 5] <- NA
+
+final_dataset$asset15 <- NA
+final_dataset$asset15[final_dataset$asset_index %in% 1] <- FALSE
+final_dataset$asset15[final_dataset$asset_index %in% 2:4] <- NA
+final_dataset$asset15[final_dataset$asset_index %in% 5] <- TRUE
+
+# Use EpiR to confirm that odds ratios are the same as those you calculated manually
+epi.2by2(table(final_dataset$case, final_dataset$asset12), method = "cross.sectional")
+epi.2by2(table(final_dataset$case, final_dataset$asset13), method = "cross.sectional")
+epi.2by2(table(final_dataset$case, final_dataset$asset14), method = "cross.sectional")
+epi.2by2(table(final_dataset$case, final_dataset$asset15), method = "cross.sectional")
+
+# Make a logistic regression model and verify that again the odds ratios are the same.
+LR_Model2 <- glm(case ~ factor(asset_index), family=binomial, data=final_dataset)
+summary(LR_Model2)
+exp(coef(LR_Model2))
+
+# We'll make two additional factors, 'mushahar' based on 'household_head_subcaste'="MUSHAHAR" and 'net3', set to TRUE if a household has at least one
+# bednet per three person, otherwise FALSE
+
+final_dataset$mushahar <- ifelse(final_dataset$household_head_subcaste == "MUSHAHAR", TRUE, FALSE)
+
+summary(final_dataset)
+
+# the bednet variable requires first determining how many people live in the household, i.e. how mny rows with the same FSN. 
+# first I create a variable 'hh_size' which is the number of rows per FSN:
+
+final_dataset$hh_size <- ave(final_dataset$FSN, final_dataset$FSN, FUN = length)
+
+# use summaries to see that you have a variable hh_size ranging from 1 to 35
+summary(final_dataset$hh_size)
+
+# Now compute a new variable net 3 which is 
+# No_Mosquito_Net/hh_size. Then recode it, lo:0.333 = FALSE, 0.333:hi = TRUE
+
+final_dataset$net3 <- final_dataset$No_Mosquito_Net / final_dataset$hh_size
+
+final_dataset$net3 <- final_dataset$net3 >= 0.333
+
+# Check with cc whether net3 and mushahar are associated with case 
+LR_Model3 <- glm(case ~ net3, family=binomial, data=final_dataset)
+summary(LR_Model3)
+exp(coef(LR_Model3))
+LR_Model4 <- glm(case ~ mushahar, family=binomial, data=final_dataset)
+summary(LR_Model4)
+exp(coef(LR_Model4))
+
+# I also create a variable 'large_hh' based on 'hh_size' 
+final_dataset$large_hh <- ifelse(final_dataset$hh_size > 7, TRUE, FALSE)
+
+# Now make a factor 'riskwall' with three levels: thatched wall, unplastered brick wall and plastered brick wall. 
+# check association with case
+
+final_dataset$risk_wall <- ifelse(
+  final_dataset$Wall_Material %in% c(6,164,166), 2, ifelse(
+    final_dataset$Wall_Material %in% 162:163, 1, ifelse(
+      final_dataset$Wall_Material == 165, 3, NA)))
+
+final_dataset$risk_wall <- as.factor(final_dataset$risk_wall)
+
+# Ownership of animals
+final_dataset$own_buf <- ifelse(final_dataset$count_Buf > 0, TRUE, FALSE)
+final_dataset$own_cow <- ifelse(final_dataset$count_Cow > 0, TRUE, FALSE)
+final_dataset$own_goat <- ifelse(final_dataset$count_Goat > 0, TRUE, FALSE)
+final_dataset$own_poul <- ifelse(final_dataset$count_Poul > 0, TRUE, FALSE)
+
+# Here I create a variable age group
+final_dataset$agegrp <- cut(final_dataset$member_age, breaks=c(0,9,19,29,39,100))
+
+# and a variable 'female'
+final_dataset$female <- ifelse(final_dataset$member_sex ==3, TRUE, FALSE)
+
+table(final_dataset$Is_Floor_Damp)
+# and a variable Damp_floor
+final_dataset$Damp_floor <- ifelse(final_dataset$Is_Floor_Damp == 1, TRUE, FALSE)
+
+# Recoding to binary the varaibles Sprayed_20**
+final_dataset$IRS_09 <- ifelse(final_dataset$Sprayed_2009 > 86, TRUE, FALSE)
+final_dataset$IRS_10 <- ifelse(final_dataset$Sprayed_2010 > 86, TRUE, FALSE)
+
+# Inputs for my table on the study population:
+table(final_dataset$agegrp)
+table(final_dataset$large_hh)
+table(final_dataset$asset_index)
+table(final_dataset$Bamboo_Tree)
+table(final_dataset$Banana_Tree)
+table(final_dataset$case)
+table(final_dataset$indoor_Buf)
+table(final_dataset$indoor_Cow)
+table(final_dataset$indoor_Goat)
+table(final_dataset$Is_Floor_Damp)
+table(final_dataset$mushahar)
+table(final_dataset$Neem_Tree)
+table(final_dataset$net3)
+table(final_dataset$own_bov)
+table(final_dataset$Perm_Water_Body)
+table(final_dataset$Rice_Field)
+table(final_dataset$risk_wall)
+table(final_dataset$Sprayed_2009)
+table(final_dataset$Sprayed_2010)
+table(final_dataset$female)
+table(final_dataset$own_buf)
+table(final_dataset$own_cow)
+table(final_dataset$own_goat)
+table(final_dataset$own_poul)
+table(final_dataset$Damp_floor)
+
+# calculate OR for exposure females
+LR_Model5 <- glm(case ~ female, family=binomial, data=final_dataset)
+summary(LR_Model5)
+exp(coef(LR_Model5))
+
+# calculate OR for exposure large_hh
+LR_Model5a <- glm(case ~ large_hh, family=binomial, data=final_dataset)
+summary(LR_Model5a)
+exp(coef(LR_Model5a))
+
+# calculate OR for exposure age group
+LR_Model6 <- glm(case ~ agegrp, family=binomial, data=final_dataset)
+summary(LR_Model6)
+exp(coef(LR_Model6))
+
+# calculate OR for exposure Mushahar caste
+LR_Model7 <- glm(case ~ mushahar, family=binomial, data=final_dataset)
+summary(LR_Model7)
+exp(coef(LR_Model7))
+
+LR_Model8 <- glm(case ~ factor(risk_wall), family=binomial, data=final_dataset)
+summary(LR_Model8)
+exp(coef(LR_Model8))
+
+# calculate OR for exposure damp floor
+LR_Model9 <- glm(case ~ Damp_floor, family=binomial, data=final_dataset)
+summary(LR_Model9)
+exp(coef(LR_Model9))
+
+# calculate OR for exposure sprayed (IRS)
+LR_Model10 <- glm(case ~ IRS_09, family=binomial, data=final_dataset)
+summary(LR_Model10)
+exp(coef(LR_Model10))
+LR_Model10 <- glm(case ~ IRS_10, family=binomial, data=final_dataset)
+summary(LR_Model10)
+exp(coef(LR_Model10))
+
+# calculate OR for exposure bednet
+LR_Model11 <- glm(case ~ net3, family=binomial, data=final_dataset)
+summary(LR_Model11)
+exp(coef(LR_Model11))
+
+# calculate OR for exposure ownership of animals
+LR_Model12 <- glm(case ~ own_goat, family=binomial, data=final_dataset)
+summary(LR_Model12)
+exp(coef(LR_Model12))
+LR_Model13 <- glm(case ~ own_cow, family=binomial, data=final_dataset)
+summary(LR_Model13)
+exp(coef(LR_Model13))
+LR_Model14 <- glm(case ~ own_buf, family=binomial, data=final_dataset)
+summary(LR_Model14)
+exp(coef(LR_Model14))
+LR_Model15 <- glm(case ~ own_poul, family=binomial, data=final_dataset)
+summary(LR_Model15)
+exp(coef(LR_Model15))
+
+# calculate OR for exposure trees, rice field, water bodies
+LR_Model16 <- glm(case ~ Bamboo_Tree, family=binomial, data=final_dataset)
+summary(LR_Model16)
+exp(coef(LR_Model16))
+LR_Model17 <- glm(case ~ Banana_Tree, family=binomial, data=final_dataset)
+summary(LR_Model17)
+exp(coef(LR_Model17))
+LR_Model18 <- glm(case ~ Neem_Tree, family=binomial, data=final_dataset)
+summary(LR_Model18)
+exp(coef(LR_Model18))
+LR_Model19 <- glm(case ~ Perm_Water_Body, family=binomial, data=final_dataset)
+summary(LR_Model19)
+exp(coef(LR_Model19))
+LR_Model20 <- glm(case ~ Rice_Field, family=binomial, data=final_dataset)
+summary(LR_Model20)
+exp(coef(LR_Model20))
+
+
+# Now I fit a logistic regression model with all factors that were signifcant at p < 0.10. I start by fitting univariate logistic regression
+# models for all factors, followed by an LR test
+
+GLM.a <- glm(case ~ agegrp, family=binomial(logit), data=final_dataset)
+GLM.b <- glm(case ~ Bamboo_Tree, family=binomial(logit), data=final_dataset)
+GLM.c <- glm(case ~ Banana_Tree, family=binomial(logit), data=final_dataset)
+GLM.d <- glm(case ~ Neem_Tree, family=binomial(logit), data=final_dataset)
+GLM.e <- glm(case ~ Perm_Water_Body, family=binomial(logit), data=final_dataset)
+GLM.f <- glm(case ~ Rice_Field, family=binomial(logit), data=final_dataset)
+GLM.g <- glm(case ~ IRS_09, family=binomial(logit), data=final_dataset)
+GLM.h <- glm(case ~ IRS_10, family=binomial(logit), data=final_dataset)
+GLM.i <- glm(case ~ mushahar, family=binomial(logit), data=final_dataset)
+GLM.j <- glm(case ~ net3, family=binomial(logit), data=final_dataset)
+GLM.k <- glm(case ~ risk_wall, family=binomial(logit), data=final_dataset)
+GLM.l <- glm(case ~ own_buf, family=binomial(logit), data=final_dataset)
+GLM.m <- glm(case ~ own_cow, family=binomial(logit), data=final_dataset)
+GLM.n <- glm(case ~ own_goat, family=binomial(logit), data=final_dataset)
+GLM.o <- glm(case ~ own_poul, family=binomial(logit), data=final_dataset)
+GLM.p <- glm(case ~ agegrp, family=binomial(logit), data=final_dataset)
+GLM.q <- glm(case ~ female, family=binomial(logit), data=final_dataset)
+GLM.r <- glm(case ~ Damp_floor, family=binomial(logit), data=final_dataset)
+GLM.s <- glm(case ~ asset_index, family=binomial(logit), data=final_dataset)
+
+
+anova(GLM.a, test="Chisq")
+anova(GLM.b, test="Chisq")
+anova(GLM.c, test="Chisq")
+anova(GLM.d, test="Chisq")
+anova(GLM.e, test="Chisq")
+anova(GLM.f, test="Chisq")
+anova(GLM.g, test="Chisq")
+anova(GLM.h, test="Chisq")
+anova(GLM.i, test="Chisq")
+anova(GLM.j, test="Chisq")
+anova(GLM.k, test="Chisq")
+anova(GLM.l, test="Chisq")
+anova(GLM.m, test="Chisq")
+anova(GLM.n, test="Chisq")
+anova(GLM.o, test="Chisq")
+anova(GLM.p, test="Chisq")
+anova(GLM.q, test="Chisq")
+anova(GLM.r, test="Chisq")
+anova(GLM.s, test="Chisq")
+
+
+
+
+# Significant at 0.10 are; IRS_09, IRS_10, asset index, banana tree, neem tree, water body, mushahar, net3, own_goat, own_buf, risk_wall and Damp_Floor.
+# I the final model I will consider all except the IRS variables because here I suspect reversed causality
+
+GLM.1 <- glm(case ~ asset_index + Banana_Tree + Neem_Tree + mushahar + Perm_Water_Body + net3 + own_goat + own_buf + risk_wall + Damp_floor, 
+             family=binomial(logit), data=final_dataset)
+summary(GLM.1)
+exp(coef(GLM.1))  # Exponentiated coefficients ("odds ratios")
+
+# Weakest is neem tree with a p-value of 0.949, so I drop it
+
+GLM.2 <- glm(case ~ asset_index + Banana_Tree + mushahar + Perm_Water_Body + net3 + own_goat + own_buf + risk_wall + Damp_floor, 
+             family=binomial(logit), data=final_dataset)
+summary(GLM.2)
+exp(coef(GLM.2))  # Exponentiated coefficients ("odds ratios")
+
+anova(GLM.1, GLM.2, test="Chisq")
+
+# weakest is now damp floor with a p-value of 0.944, so I drop it
+
+GLM.3 <- glm(case ~ asset_index + Banana_Tree + mushahar + Perm_Water_Body + net3 + own_goat + own_buf + risk_wall, 
+             family=binomial(logit), data=final_dataset)
+summary(GLM.3)
+exp(coef(GLM.3))  # Exponentiated coefficients ("odds ratios")
+
+anova(GLM.2, GLM.3, test="Chisq")
+
+# weakest is now net3, p = 0.247 so I drop it
+
+GLM.4 <- glm(case ~ asset_index + Banana_Tree + mushahar + Perm_Water_Body + own_goat + own_buf + risk_wall, 
+             family=binomial(logit), data=final_dataset)
+summary(GLM.4)
+exp(coef(GLM.4))  # Exponentiated coefficients ("odds ratios")
+
+anova(GLM.3, GLM.4, test="Chisq")
+
+# weakest is now banana tree, p = 0.244107, so I drop it
+
+GLM.5 <- glm(case ~ asset_index + mushahar + Perm_Water_Body + own_goat + own_buf + risk_wall, 
+             family=binomial(logit), data=final_dataset)
+summary(GLM.5)
+exp(coef(GLM.5))  # Exponentiated coefficients ("odds ratios")
+
+anova(GLM.4, GLM.5, test="Chisq")
+
+# weakest is now permanent water body with a p-value of 0.12, si I drop it
+
+GLM.5 <- glm(case ~ asset_index + mushahar + own_goat + own_buf + risk_wall, 
+             family=binomial(logit), data=final_dataset)
+summary(GLM.5)
+exp(coef(GLM.5))  # Exponentiated coefficients ("odds ratios")
+
+anova(GLM.4, GLM.5, test="Chisq")
+
+# weakest is now own_buf with a p-value of 0.078, so I drop it
+
+GLM.6 <- glm(case ~ asset_index + mushahar + own_goat + risk_wall, 
+             family=binomial(logit), data=final_dataset)
+summary(GLM.6)
+exp(coef(GLM.6))  # Exponentiated coefficients ("odds ratios")
+
+anova(GLM.5, GLM.6, test="Chisq")
+
+# weakest is now own_goat, with a p-value of 0.059, so I drop it
+
+
+GLM.7 <- glm(case ~ asset_index + mushahar + risk_wall, 
+             family=binomial(logit), data=final_dataset)
+summary(GLM.7)
+exp(coef(GLM.7))  # Exponentiated coefficients ("odds ratios")
+
+anova(GLM.6, GLM.7, test="Chisq")
+# the LR test is non significant, p = 0.06 so I can indeed drop own_goat
+
+
+
+# Now all factors are significant for at least one level. Asset index is weakest, I will just try without it
+
+GLM.8 <- glm(case ~ mushahar + risk_wall, family=binomial(logit), data=final_dataset)
+summary(GLM.8)
+exp(coef(GLM.8))  # Exponentiated coefficients ("odds ratios")
+
+# Clearly the model with asset index is significantly better than the model without, p= 0.0008.
+anova(GLM.7, GLM.8, test="Chisq")
+
+# Next I fit an interaction between risk wall and asset index
+GLM.9 <- glm(case ~ mushahar + risk_wall + asset_index  +asset_index*risk_wall, family=binomial(logit), data=final_dataset)
+summary(GLM.9)
+exp(coef(GLM.9))  # Exponentiated coefficients ("odds ratios")
+
+# And I do the likelihood ratio testing
+
+anova(GLM.7, GLM.9, test="Chisq")
+
+# p-value of LR test is 0.72, so model with interaction is not significnatly better
+
+# Next I try interaction between Mushahar and asset index
+GLM.10 <- glm(case ~ mushahar + risk_wall + asset_index + asset_index * mushahar, family=binomial(logit), data=final_dataset)
+summary(GLM.10)
+exp(coef(GLM.10))  # Exponentiated coefficients ("odds ratios")
+
+# LR test has a p-value of 0.09, so complex model not significantly better
+anova(GLM.7, GLM.10, test="Chisq")
+
+# Finally I test the interaction between Mushahar and asset index
+
+GLM.11 <- glm(case ~ mushahar + risk_wall + asset_index + risk_wall* mushahar, family=binomial(logit), data=final_dataset)
+summary(GLM.11)
+exp(coef(GLM.11))  # Exponentiated coefficients ("odds ratios")
+
+# LR test has a p-vaule of 0.69, so no indication for an interaction
+anova(GLM.11, GLM.7, test="Chisq")
+
+# So my final model remains model 6 with asset index, mushahar and risk wall
+
+GLM.7 <- glm(case ~ mushahar + risk_wall + asset_index, family=binomial(logit), data=final_dataset)
+summary(GLM.7)
+exp(coef(GLM.7))  # Exponentiated coefficients ("odds ratios")
+exp(confint(GLM.7))
+
+
+# You could consider recoding asset index to a binary varibale poverty, 1:4 = TRUE, 5 = FALSE
+# The interaction terms remain non significant. 
+
+final_dataset$poverty <- ifelse(final_dataset$asset_index %in% 1:4, TRUE, FALSE)
+
+GLM.14 <- glm(case ~ mushahar + risk_wall + poverty, family=binomial(logit), data=final_dataset)
+summary(GLM.14)
+exp(coef(GLM.14))  # Exponentiated coefficients ("odds ratios")
+exp(confint(GLM.14))
+
+GLM.15 <- glm(case ~ mushahar + risk_wall + poverty+ poverty*mushahar, family=binomial(logit), data=final_dataset)
+summary(GLM.15)
+exp(coef(GLM.15))  # Exponentiated coefficients ("odds ratios")
+anova(GLM.15, GLM.14, test="Chisq")
+exp(confint(GLM.14))
+
+GLM.16 <- glm(case ~ mushahar + risk_wall + poverty + poverty * risk_wall, family=binomial(logit), data=final_dataset)
+summary(GLM.16)
+exp(coef(GLM.16))  # Exponentiated coefficients ("odds ratios")
+
+anova(GLM.16, GLM.14, test="Chisq")
+
+GLM.17 <- glm(case ~ mushahar + risk_wall + poverty + mushahar * risk_wall, family=binomial(logit), data=final_dataset)
+summary(GLM.17)
+exp(coef(GLM.17))  # Exponentiated coefficients ("odds ratios")
+anova(GLM.17, GLM.14, test="Chisq")
+
+# So then my final model is model 14: case = poverty + risk_wall + mushahar
+
+# odds ratios: mushahar 6.7 (4.4-9.9), brick wall vs thatched wall 0.7 (0.5-0.9), plastered brick wall vs. thatched wall 0.3 (0.2-0.5)
+# and poverty 2.0 (1.2-3.5)
+
+# At the end I export my final dataset to csv so I can use it in other programs
+write.table(final_dataset, "final_dataset.csv", sep=",", col.names=TRUE, 
+            row.names=FALSE, quote=TRUE, na="NA")
