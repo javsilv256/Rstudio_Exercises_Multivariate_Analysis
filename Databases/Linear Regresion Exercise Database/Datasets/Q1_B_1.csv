@@ -1,0 +1,225 @@
+fsn,animal_name,animal_count,animal_distance,keep_inside_house,days_inside_house
+45001,Goats,3,5,1,120
+45001,"Poultry (chickens, ducks, pigeon)",1,0,1,365
+45002,Buffaloes,1,4,0,-1
+45003,Cows/Oxen,1,3,1,210
+45004,Goats,2,5,1,180
+45006,Cows/Oxen,2,0,1,360
+45009,Goats,7,0,1,360
+45021,Cows/Oxen,3,15,0,-1
+45021,Goats,1,5,1,150
+45024,Goats,3,15,1,90
+45025,Goats,3,0,1,90
+45027,"Poultry (chickens, ducks, pigeon)",2,0,1,360
+45032,Goats,4,5,0,-1
+45034,Goats,1,0,1,210
+45036,Goats,1,0,1,240
+45037,Goats,1,0,1,250
+45038,Buffaloes,2,12,0,-1
+45038,"Poultry (chickens, ducks, pigeon)",2,0,1,365
+45040,Cows/Oxen,1,5,1,40
+45042,Cows/Oxen,1,0,1,120
+45047,Cows/Oxen,1,5,0,-1
+45048,Cows/Oxen,1,0,1,240
+45049,Buffaloes,1,6,0,-1
+45053,Goats,2,0,1,360
+45054,Goats,1,0,1,210
+45056,Goats,1,0,1,240
+45060,Goats,3,0,1,120
+45062,Cows/Oxen,1,8,1,120
+45067,Goats,1,1,1,240
+45068,Cows/Oxen,1,15,1,100
+45068,Goats,2,2,1,120
+45071,Goats,1,0,1,240
+45073,Goats,1,0,1,210
+45080,Goats,2,1,1,365
+45081,Goats,2,2,1,300
+45082,Pigs,2,0,1,365
+45086,Cows/Oxen,1,5,0,-1
+45086,Buffaloes,1,5,0,-1
+45086,Goats,1,0,1,365
+45086,Dogs,1,5,0,-1
+45087,Goats,3,2,1,180
+45087,"Poultry (chickens, ducks, pigeon)",1,5,1,365
+45088,Goats,3,0,1,365
+45089,Goats,4,0,1,365
+45089,"Poultry (chickens, ducks, pigeon)",1,0,1,365
+45091,Goats,1,0,1,365
+45100,Goats,1,2,1,120
+45101,Goats,1,2,1,120
+45103,Goats,1,2,1,120
+45106,Goats,5,0,1,365
+45110,Goats,1,5,1,120
+45111,Goats,1,0,1,120
+45113,Goats,1,0,1,120
+45114,Goats,2,5,1,120
+45118,Cows/Oxen,2,0,1,100
+45120,Cows/Oxen,2,15,0,-1
+45120,Buffaloes,1,15,0,-1
+45120,Goats,7,0,1,120
+45121,Goats,1,0,1,120
+45124,Goats,2,0,1,365
+45125,Cows/Oxen,1,0,1,240
+45126,Goats,1,0,1,365
+45127,Buffaloes,2,3,0,-1
+45128,Cows/Oxen,2,5,0,-1
+45130,Cows/Oxen,2,5,0,-1
+45132,Goats,2,0,1,365
+45134,Goats,1,2,1,200
+45138,Goats,1,0,1,365
+45140,Cows/Oxen,3,5,0,-1
+45140,Goats,2,0,1,365
+45140,"Poultry (chickens, ducks, pigeon)",4,0,1,365
+45141,Goats,1,5,0,-1
+45142,Goats,5,0,1,365
+45144,Goats,1,0,1,365
+45144,"Poultry (chickens, ducks, pigeon)",4,0,1,365
+45147,Goats,1,0,1,365
+45149,Goats,3,0,1,365
+45150,Goats,3,0,1,365
+45153,Goats,2,0,1,240
+45154,Cows/Oxen,1,2,0,-1
+45154,Goats,1,0,1,300
+45155,Goats,2,0,1,365
+45157,Cows/Oxen,2,3,0,-1
+45157,Buffaloes,1,3,0,-1
+45157,Goats,1,3,0,-1
+45157,"Poultry (chickens, ducks, pigeon)",1,0,1,365
+45172,Goats,1,0,1,365
+45175,Goats,1,1,1,365
+45177,Cows/Oxen,2,12,0,-1
+45177,Goats,1,0,1,365
+45180,Cows/Oxen,2,5,1,120
+45180,Goats,2,2,1,365
+45184,Goats,3,5,1,120
+45185,Buffaloes,1,4,0,-1
+45196,Goats,2,0,1,365
+45197,Goats,1,1,1,360
+45202,Goats,2,0,1,365
+45203,Cows/Oxen,3,3,0,-1
+45203,Dogs,1,3,0,-1
+45205,Buffaloes,1,10,0,-1
+45205,Goats,1,0,1,365
+45205,"Poultry (chickens, ducks, pigeon)",3,0,1,365
+45208,Goats,1,0,1,360
+45210,Goats,2,0,1,365
+45210,"Poultry (chickens, ducks, pigeon)",3,0,1,365
+45214,Goats,2,3,1,120
+45215,Goats,4,2,1,180
+45216,Goats,2,0,1,360
+45217,Goats,2,0,1,365
+45221,Goats,2,2,1,300
+45226,Goats,2,2,1,280
+45227,Goats,1,3,1,250
+45229,Cows/Oxen,1,3,1,120
+45230,Goats,2,0,1,180
+45242,Cows/Oxen,2,5,0,-1
+45242,Goats,4,2,0,-1
+45247,Cows/Oxen,1,5,0,-1
+45248,Cows/Oxen,1,3,0,-1
+45251,Goats,1,0,1,365
+45251,"Poultry (chickens, ducks, pigeon)",3,0,1,365
+45256,Cows/Oxen,1,1,0,-1
+45256,Goats,4,1,0,-1
+45257,Goats,3,0,1,365
+45258,Cows/Oxen,2,15,0,-1
+45261,Goats,1,3,0,-1
+45272,Goats,2,0,1,365
+45272,"Poultry (chickens, ducks, pigeon)",2,0,1,365
+45277,"Poultry (chickens, ducks, pigeon)",1,0,1,365
+45278,"Poultry (chickens, ducks, pigeon)",1,0,1,365
+45288,Goats,2,0,0,-1
+45292,Goats,1,0,1,210
+45307,Goats,3,-1,1,365
+45307,"Poultry (chickens, ducks, pigeon)",1,-1,1,365
+45310,Cows/Oxen,2,12,0,-1
+45312,"Poultry (chickens, ducks, pigeon)",4,0,1,365
+45313,Goats,4,0,1,365
+45321,Goats,1,15,0,-1
+45323,Cows/Oxen,1,3,0,-1
+45324,Goats,2,2,0,-1
+45324,"Poultry (chickens, ducks, pigeon)",2,0,1,365
+45326,Cows/Oxen,2,2,0,-1
+45329,Cows/Oxen,1,3,0,-1
+45331,Goats,5,0,1,365
+45332,Goats,2,0,1,365
+45333,Goats,2,5,0,-1
+45334,Goats,1,0,1,365
+45336,Goats,1,0,1,365
+45336,Dogs,1,0,1,365
+45340,Goats,3,3,0,-1
+45340,"Poultry (chickens, ducks, pigeon)",2,0,1,365
+45344,"Poultry (chickens, ducks, pigeon)",1,0,1,365
+45351,Goats,1,0,1,365
+45352,Goats,1,0,1,365
+45354,Goats,1,5,0,0
+45355,Cows/Oxen,1,0,1,240
+45357,Goats,1,0,1,365
+45361,Cows/Oxen,2,50,0,-1
+45370,Goats,1,0,1,365
+45376,Cows/Oxen,1,20,0,-1
+45380,Goats,3,0,1,365
+45381,Goats,2,0,1,365
+45384,Goats,1,0,1,365
+45390,Goats,1,0,1,365
+45393,Goats,1,0,1,365
+45394,Cows/Oxen,1,8,0,-1
+45395,Goats,1,0,1,365
+45396,Goats,1,2,0,-1
+45398,"Poultry (chickens, ducks, pigeon)",2,0,1,365
+45399,Goats,1,0,1,365
+45399,"Poultry (chickens, ducks, pigeon)",6,0,1,365
+45404,"Poultry (chickens, ducks, pigeon)",1,0,1,365
+45408,Goats,1,1,1,120
+45408,"Poultry (chickens, ducks, pigeon)",4,1,1,120
+45409,"Poultry (chickens, ducks, pigeon)",1,0,1,365
+45410,Goats,2,0,1,365
+45411,Goats,3,3,0,-1
+45412,Goats,3,0,1,365
+45413,Goats,2,0,1,365
+45414,"Poultry (chickens, ducks, pigeon)",1,0,1,365
+45421,Goats,1,0,1,365
+45427,Goats,1,0,1,365
+45428,Goats,2,0,1,365
+45438,Cows/Oxen,1,5,0,-1
+45441,Cows/Oxen,1,6,0,-1
+45448,Cows/Oxen,4,10,0,-1
+45448,"Poultry (chickens, ducks, pigeon)",5,0,1,-1
+45450,Cows/Oxen,1,5,0,-1
+45450,Buffaloes,2,5,0,-1
+45451,Cows/Oxen,1,5,0,-1
+45452,Buffaloes,2,8,1,100
+45453,Cows/Oxen,1,4,0,-1
+45454,Cows/Oxen,3,5,0,-1
+45455,Cows/Oxen,1,10,0,-1
+45456,Cows/Oxen,2,5,0,-1
+45459,Buffaloes,1,5,0,-1
+45460,Buffaloes,1,20,0,-1
+45462,Cows/Oxen,2,5,0,-1
+45462,Buffaloes,2,5,0,-1
+45464,Cows/Oxen,1,5,1,-1
+45466,Cows/Oxen,1,0,0,-1
+45467,Cows/Oxen,1,5,0,-1
+45468,Goats,1,0,1,60
+45468,"Poultry (chickens, ducks, pigeon)",1,0,1,90
+45470,Goats,1,0,1,365
+45472,Goats,1,0,1,365
+45474,Goats,1,0,1,365
+45477,Goats,2,0,1,365
+45478,Goats,3,0,1,180
+45482,Goats,1,0,1,365
+45483,Goats,1,0,1,365
+45485,Goats,3,0,1,365
+45486,Goats,1,0,1,365
+45487,Goats,4,0,1,365
+45487,"Poultry (chickens, ducks, pigeon)",1,0,1,365
+45488,"Poultry (chickens, ducks, pigeon)",1,0,1,365
+45489,"Poultry (chickens, ducks, pigeon)",2,0,1,365
+45490,Buffaloes,1,35,0,-1
+45491,Buffaloes,1,10,0,-1
+45495,Cows/Oxen,1,10,0,-1
+45496,Goats,2,1,0,-1
+45497,Goats,3,5,1,300
+45497,"Poultry (chickens, ducks, pigeon)",2,2,1,365
+45499,Goats,2,0,1,365
+45499,Pigs,1,0,1,365
